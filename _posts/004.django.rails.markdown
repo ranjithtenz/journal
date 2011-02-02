@@ -1,0 +1,95 @@
+---
+categories: django, rails, loc
+date: 2008/05/10 12:00:00
+title: Django vs Rails Code Size
+---
+Tags: django rails loc
+
+I've been a long user of Ruby and frameworks like [Rails][ra], [Merb][me],
+and [Sinatra][si]. I've been sort of following [Django][dj] since it's
+first public release but never got aground to building something with it. My
+Python skills is a bit rusty compared to my Ruby skills so I've decided to
+start a project with Django.
+
+Django seems like a fairly large project including a built-in admin-interface,
+internationalization and localization features in addition to other
+standard functionality as in Rails (templating, dispatcher, ORM, request
+processor). At first hand it seemed like Django would be a bit bloated
+compared to Rails considering the additional features it provided. The results
+when using [cloc][cl] is contradicting my initial assumptions.
+
+First we have the as-of-writing latest version of Rails:
+
+    #!text
+    [diamond:~/dev/rails]% git log | head -n 7
+    commit a7ea06b4ebe252e258f83e7de945b4baa30ec3bc
+    Author: Jacek Becela <jacek.becela@gmail.com>
+    Date:   Thu May 8 13:47:24 2008 +0200
+
+        Make render shorthands work with namespaced controllers
+            
+        Signed-off-by: Pratik Naik <pratiknaik@gmail.com>
+
+    [diamond:~/dev/rails]% cloc --exclude-dir=.git .
+        1383 text files.
+        1354 unique files.                                          
+         309 files ignored.
+
+    http://cloc.sourceforge.net v 1.03  T=8.0 s (143.8 files/s, 20227.0 lines/s)
+    -------------------------------------------------------------------------------
+    Language          files     blank   comment      code    scale   3rd gen. equiv
+    -------------------------------------------------------------------------------
+    Ruby               1040     18758     24739    102037 x   4.20 =      428555.40
+    Javascript           17      1930       870     11770 x   1.48 =       17419.60
+    YAML                 81       129        93      1017 x   0.90 =         915.30
+    HTML                  6        41         3       322 x   1.90 =         611.80
+    CSS                   4         9         3        45 x   1.00 =          45.00
+    SQL                   1         6         0        43 x   2.29 =          98.47
+    Bourne Shell          1         0         0         1 x   3.81 =           3.81
+    -------------------------------------------------------------------------------
+    SUM:               1150     20873     25708    115235 x   3.88 =      447649.38
+    -------------------------------------------------------------------------------
+
+Then the latest version of Django (from the [Mercurial mirror][mm]):
+
+    #!text
+    [diamond:~/dev/django-trunk]% hg tip
+    changeset:   5420:3762db44f8cd
+    tag:         tip
+    user:        russellm
+    date:        Sat May 10 13:19:19 2008 +0000
+    summary:     Removed mark_safe from the saved request path on the admin login
+                 form. This prevents a potential XSS attack. Formal announcement
+                 will be forthcoming.
+
+    [diamond:~/dev/django-trunk]% cloc --exclude-dir=.hg .
+         813 text files.          
+         808 unique files.                                          
+        2119 files ignored.
+
+    http://cloc.sourceforge.net v 1.03  T=3.0 s (208.3 files/s, 26209.3 lines/s)
+    -------------------------------------------------------------------------------
+    Language          files     blank   comment      code    scale   3rd gen. equiv
+    -------------------------------------------------------------------------------
+    Python              522     10295      4947     59394 x   4.20 =      249454.80
+    Javascript           13       106       258      1447 x   1.48 =        2141.56
+    HTML                 72       274         6      1283 x   1.90 =        2437.70
+    CSS                  11        60        59       354 x   1.00 =         354.00
+    make                  1        11         4        53 x   2.50 =         132.50
+    XML                   4         0         0        41 x   1.90 =          77.90
+    Bourne Shell          1         4         7        17 x   3.81 =          64.77
+    SQL                   1         1         0         7 x   2.29 =          16.03
+    -------------------------------------------------------------------------------
+    SUM:                625     10751      5281     62596 x   4.07 =      254679.26
+    -------------------------------------------------------------------------------
+
+Counting only code lines Django is 54% the size of Rails. Due note that this
+is highly unscientific. Rails provides features that Django don't
+(ActiveResource for instance).
+
+[ra]: http://rails.org
+[me]: http://merbivore.com
+[si]: http://sinatrarb.com
+[dj]: http://djangoproject.com
+[cl]: http://cloc.sourceforge.net
+[mm]: http://hg.dpaste.com/django/

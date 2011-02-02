@@ -166,7 +166,9 @@ class Post(object):
                     datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         
         if not self.slug:
-            self.slug = re.sub("[ ?]", "-", self.title).lower()
+            self.slug = re.sub(r'\s+', '-',
+                               re.sub(r'[^\w\s-]', '',
+                               self.title.replace('.', ' ').lower()))
 
         if not self.date:
             self.date = datetime.datetime.now(pytz.timezone(self.__timezone))

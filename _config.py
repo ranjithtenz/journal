@@ -14,7 +14,7 @@ blog.posts_per_page = 10
 blog.auto_permalink.path = ":blog_path/:title"
 blog.post_excerpts.enabled = False
 blog.post_default_filters = {
-        "markdown": "syntax_highlight, markdown",
+        "markdown": "markdown, syntax_highlight",
 }
 blog.category_dir = "tags"
 

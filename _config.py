@@ -16,3 +16,4 @@ blog.post_excerpts.enabled = False
 blog.post_default_filters = {
         "markdown": "syntax_highlight, markdown",
 }
+blog.category_dir = "tags"

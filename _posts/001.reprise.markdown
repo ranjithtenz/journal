@@ -16,7 +16,7 @@ me to publish blog entries with as little overhead as possible:
 * No archives.
 * Just entries.
 
-Usage can me summarized in five steps:
+Usage can be summarized in five steps:
 
 1. gem install sinatra haml bluecloth rubypants -y
 2. wget redflavor.com/reprise.rb
@@ -29,7 +29,7 @@ dashes and the likes by using [RubyPants][3]. I also went ahead and added hAtom
 support enabling [syndication][4] by using [third party parsers][5]. Lastly I
 added [CSS3 multi column][6] support for Firefox and Webkit browsers.
 
-[1]: http://redflavor.com/reprise.rb
+[1]: http://github.com/uggedal/reprise
 [2]: http://www.rubyinside.com/reprise-a-ruby-powered-blogging-app-in-100-lines-including-templates-646.html
 [3]: http://chneukirchen.org/repos/rubypants/
 [4]: http://tools.microformatic.com/transcode/atom/hatom/journal.redflavor.com

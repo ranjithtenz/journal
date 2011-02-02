@@ -1,0 +1,37 @@
+---
+categories: ruby, reprise, markdown, cli, hatom
+date: 2007/11/09 12:00:00
+title: Reprise - A Minimalistic Blog
+---
+I [published][1] my newly written blog software yesterday which was featured on
+[Ruby Inside][2] today. My aim for this little piece of software was to allow
+me to publish blog entries with as little overhead as possible:
+
+* Write entries using my favorite editor.
+* Write in markdown syntax.
+* No comments.
+* No pingbacks.
+* No categories.
+* No tags.
+* No archives.
+* Just entries.
+
+Usage can me summarized in five steps:
+
+1. gem install sinatra haml bluecloth rubypants -y
+2. wget redflavor.com/reprise.rb
+3. mkdir entries
+4. vi entries/YYYY.MM.DD.Title.Goes.Here
+5. ruby reprise.rb
+
+Thanks to a suggestion from Sime Ramov it now supports proper apostrophes, em
+dashes and the likes by using [RubyPants][3]. I also went ahead and added hAtom
+support enabling [syndication][4] by using [third party parsers][5]. Lastly I
+added [CSS3 multi column][6] support for Firefox and Webkit browsers.
+
+[1]: http://redflavor.com/reprise.rb
+[2]: http://www.rubyinside.com/reprise-a-ruby-powered-blogging-app-in-100-lines-including-templates-646.html
+[3]: http://chneukirchen.org/repos/rubypants/
+[4]: http://tools.microformatic.com/transcode/atom/hatom/journal.redflavor.com
+[5]: http://tools.microformatic.com/help/xhtml/hatom/
+[6]: http://www.w3.org/TR/css3-multicol/

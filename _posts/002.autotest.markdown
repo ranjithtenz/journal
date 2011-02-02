@@ -3,7 +3,6 @@ categories: rspec, ruby, autotest, cli, colors
 date: 2008/04/17 12:00:00
 title: Colorized Autotest with Rspec
 ---
-
 I had problems with getting the `autotest/redgreen` bundled with
 [ZenTest](http://zenspider.com/ZSS/Products/ZenTest/) to work
 when using [RSpec](http://rspec.info). Here follows my quick hack

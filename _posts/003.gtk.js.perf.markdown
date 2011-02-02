@@ -1,0 +1,157 @@
+---
+categories: linux, browser, javascript, performance, iceweasel, firefox, epiphany, webkit
+date: 2008/04/26 12:00:00
+title: JavaScript Performance on GTK Linux Browser
+---
+
+I've recently noticed that my system is sluggish on certain web pages which
+incorporates lots of behavior with JavaScript. I've been running
+[Iceweasel][ice] from Debian's testing repositories for ages. I had heard some
+mentions of lower memory usage and faster JavaScript in the upcoming 3.0
+release of Firefox&#0174;/Iceweasel throughout the blogosphere.
+In addition the developers of [Epiphany][epi] have recently decided to use
+[WebKit][kit] as their [default backend][def].
+
+I desperately needed better JavaScript performance and decided to test the
+stable 2.0 branch of Iceweasel against the latest beta version from the
+3.0 branch together with the latest WebKit enabled Epiphany from the
+Debian unstable repositories. Why not test [Opera][ope]? Firstly Opera is
+[Qt][qt] and not [GTK][gtk] based -- a showstopper for me. Secondly Opera
+is not [open source software][oss]. Thirdly Opera does not natively
+run on the [x86-64][x64] architecture.
+Therefore the browser versions used for testing were as follows
+(identified by their user User-Agent request header):
+
+    #!text
+    Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.14) Gecko/20080404
+    Iceweasel/2.0.0.14 (Debian-2.0.0.14-2)
+
+    Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9b5) Gecko/2008032602
+    Iceweasel/3.0b5 (Debian-3.0~b5-2)
+
+    Mozilla/5.0 (X11; U; Linux x86_64; en-us) AppleWebKit/525.1+ (KHTML, like
+    Gecko, Safari/525.1+) epiphany-browser
+
+And here are their Debian package versions:
+
+    #!text
+    # apt-cache show iceweasel
+    Package: iceweasel
+    Architecture: amd64
+    Version: 2.0.0.14-2
+
+    # apt-cache show iceweasel
+    Package: iceweasel
+    Architecture: amd64
+    Version: 3.0~b5-2
+
+    # apt-cache show epiphany-webkit 
+    Package: epiphany-webkit
+    Architecture: amd64
+    Version: 2.22.1.1-2
+
+Based on those User-Agent strings it should be no surprise that I'm running a
+x86-64 based system on Debian. Here are more specific details of
+my system:
+
+    #!text
+    # cat /etc/issue
+    Debian GNU/Linux lenny/sid
+
+    # uname -a
+    Linux diamond 2.6.24-1-amd64 #1 SMP Mon Feb 11 13:47:43 UTC 2008
+    x86_64 GNU/Linux
+
+    # cat /proc/cpuinfo 
+    processor       : 0
+    model name      : AMD Athlon(tm) X2 Dual Core Processor BE-2300
+    cpu MHz         : 1903.970
+    cache size      : 512 KB
+    bogomips        : 3811.20
+
+    processor       : 1
+    model name      : AMD Athlon(tm) X2 Dual Core Processor BE-2300
+    cpu MHz         : 1903.970
+    cache size      : 512 KB
+    bogomips        : 3807.96
+
+    # cat /proc/meminfo 
+    MemTotal:       963952 kB
+    SwapTotal:      498004 kB
+
+I decided to use [John Resig][joh]'s [Dromaeo][dro] and WebKit's
+[SunSpider][sun] JavaScript performance test suites to benchmark the
+performance of the selected browsers against each other. Remember
+the wise words of Benjamin Disraeli:
+
+> There are three kinds of lies: lies, damned lies, and statistics.
+
+The performance metrics presented here applies for my system, and my system
+alone. There could be a myriad of factors contributing to the numbers I
+received. To keep such factors to a minimum I rebooted my system before
+staring the browser under testing, and then restarted my system again before
+testing the next browser. In addition I blasted away any profiles, running the
+browsers vanilla without any cache, history, cookies, nor extensions.
+
+I started writing a script with [Hpricot][hpr] and [ghcartrb][gch] to generate
+some nice detailed charts of the differences between the browsers. But when I
+found myself writing code like this:
+
+    #!ruby
+    max = parsed.map {|res| res.values[0]}.transpose.map do |val|
+      val.inject(0) { |sum,x| sum+x }
+    end.max
+
+I threw in the towel and decided to make some manual summarization charts.
+Without further ado, here are the results for the respective browsers:
+
+<img src="http://chart.apis.google.com/chart?chxt=y,x&chs=550x140&chxl=0:|Epiphany|Iceweasel+3.0|Iceweasel+2.0|1:|0|2403.55|4807.1|7210.65|9614.2&chdl=Total+running+time+in+ms&chd=s:9RR&chtt=Dromaeo+Results&cht=bhs"
+alt="Dromaeo Results">
+
+<img
+src="http://chart.apis.google.com/chart?chxt=y,x&chs=550x140&chxl=0:|Epiphany|Iceweasel+3.0|Iceweasel+2.0|1:|0|4680.55|9361.1|14041.65|18722.2&chdl=Total+running+time+in+ms&chd=s:8RP&chtt=SunSpider+Results&cht=bhs" alt="SunSpider Results">
+
+For detailed differences between the browsers have a look at:
+
+* Comparison between all three browsers for the [Dromaeo suite][sdr].
+* Results of [Iceweasel 2.0][f2s], [Iceweasel 3.0][f3s], and [Epiphany][eps]
+  for the SunSpider suite.
+
+Based on these observations it's not hard to see that there have been major
+improvements from the 2.0 releases to the forthcoming 3.0 release of
+Iceweasel with regards to JavaScript performance. The WebKit enabled
+Epiphany browser is on par with Iceweasel 3.0 in the Dromaeo test suite
+while it seems to be marginally faster than Iceweasel 3.0 in the
+SunSpider test suite.
+
+The differences between Iceweasel 3.0 and Epiphany does not seem to be
+sufficient for switching. Epiphany does seem to be a bit more light weight
+and is delivering everything I need in a browser. The only thing holding me
+back is the [Vimperator][vim] extension for Iceweasel. I simply can't live
+without [`vi`][vi] keybindings in my browser now that I've gotten used to it.
+I'll adopt the 3.0 branch of Iceweasel if it proves to be stable over some
+more prolonged use.
+
+[ice]: http://en.wikipedia.org/wiki/Iceweasel/
+[epi]: http://www.gnome.org/projects/epiphany/
+[kit]: http://webkit.org
+[def]: http://blogs.gnome.org/epiphany/2008/04/01/the-future-of-epiphany/
+[ope]: http://opera.com
+[qt]:  http://trolltech.com/products/qt
+[gtk]: http://gtk.org
+[oss]: http://www.opensource.org/docs/osd
+[x64]: http://en.wikipedia.org/wiki/X86-64
+[joh]: http://ejohn.org
+[dro]: http://dromaeo.com
+[sun]: http://webkit.org/perf/sunspider-0.9/sunspider.html
+[hpr]: http://code.whytheluckystiff.net/hpricot
+[gch]: http://code.google.com/p/gchartrb/
+[sdr]: http://dromaeo.com/?id=8303,8302,8305
+[f2s]: http://webkit.org/perf/sunspider-0.9/sunspider-results.html?%7B%223d-cube%22:%5B800,799,792,786,805%5D,%223d-morph%22:%5B1692,1694,1707,1689,1676%5D,%223d-raytrace%22:%5B430,406,413,407,409%5D,%22access-binary-trees%22:%5B224,210,203,206,210%5D,%22access-fannkuch%22:%5B516,510,513,515,515%5D,%22access-nbody%22:%5B707,716,720,723,735%5D,%22access-nsieve%22:%5B360,361,374,359,363%5D,%22bitops-3bit-bits-in-byte%22:%5B338,356,342,341,349%5D,%22bitops-bits-in-byte%22:%5B322,327,325,325,328%5D,%22bitops-bitwise-and%22:%5B3981,3990,3966,4032,3996%5D,%22bitops-nsieve-bits%22:%5B435,435,456,438,443%5D,%22controlflow-recursive%22:%5B127,111,111,111,112%5D,%22crypto-aes%22:%5B315,291,326,314,297%5D,%22crypto-md5%22:%5B246,265,249,285,259%5D,%22crypto-sha1%22:%5B265,247,265,264,235%5D,%22date-format-tofte%22:%5B833,829,815,824,807%5D,%22date-format-xparb%22:%5B1675,1671,1576,1586,1565%5D,%22math-cordic%22:%5B1173,1183,927,910,918%5D,%22math-partial-sums%22:%5B498,476,481,479,493%5D,%22math-spectral-norm%22:%5B403,398,401,399,402%5D,%22regexp-dna%22:%5B571,567,582,592,579%5D,%22string-base64%22:%5B802,723,732,714,716%5D,%22string-fasta%22:%5B642,546,558,566,586%5D,%22string-tagcloud%22:%5B472,452,484,451,466%5D,%22string-unpack-code%22:%5B896,895,892,890,892%5D,%22string-validate-input%22:%5B391,387,389,362,329%5D%7D
+[f2d]: http://dromaeo.com/?id=8303
+[f3s]: http://webkit.org/perf/sunspider-0.9/sunspider-results.html?%7B%223d-cube%22:%5B226,228,228,236,244%5D,%223d-morph%22:%5B216,220,222,225,225%5D,%223d-raytrace%22:%5B188,187,175,180,189%5D,%22access-binary-trees%22:%5B85,82,84,85,84%5D,%22access-fannkuch%22:%5B413,404,417,405,408%5D,%22access-nbody%22:%5B222,223,229,220,222%5D,%22access-nsieve%22:%5B145,143,156,158,157%5D,%22bitops-3bit-bits-in-byte%22:%5B126,125,125,126,126%5D,%22bitops-bits-in-byte%22:%5B177,165,171,170,165%5D,%22bitops-bitwise-and%22:%5B162,155,155,156,155%5D,%22bitops-nsieve-bits%22:%5B225,224,221,221,222%5D,%22controlflow-recursive%22:%5B67,66,66,66,67%5D,%22crypto-aes%22:%5B137,138,138,151,152%5D,%22crypto-md5%22:%5B91,91,94,92,91%5D,%22crypto-sha1%22:%5B90,90,90,105,91%5D,%22date-format-tofte%22:%5B295,294,292,304,298%5D,%22date-format-xparb%22:%5B209,204,199,204,206%5D,%22math-cordic%22:%5B248,248,254,255,254%5D,%22math-partial-sums%22:%5B206,208,205,206,189%5D,%22math-spectral-norm%22:%5B127,126,125,125,126%5D,%22regexp-dna%22:%5B408,409,383,366,400%5D,%22string-base64%22:%5B139,136,135,144,137%5D,%22string-fasta%22:%5B287,292,296,294,295%5D,%22string-tagcloud%22:%5B268,261,265,276,257%5D,%22string-unpack-code%22:%5B534,526,486,502,546%5D,%22string-validate-input%22:%5B186,187,182,181,188%5D%7D
+[f3d]: http://dromaeo.com/?id=8302
+[eps]: http://webkit.org/perf/sunspider-0.9/sunspider-results.html?%7B%223d-cube%22:%5B188,183,191,184,190%5D,%223d-morph%22:%5B218,222,229,228,227%5D,%223d-raytrace%22:%5B187,189,200,191,189%5D,%22access-binary-trees%22:%5B93,95,93,93,93%5D,%22access-fannkuch%22:%5B357,363,358,375,355%5D,%22access-nbody%22:%5B181,183,180,181,183%5D,%22access-nsieve%22:%5B89,88,87,89,91%5D,%22bitops-3bit-bits-in-byte%22:%5B83,89,84,94,82%5D,%22bitops-bits-in-byte%22:%5B140,138,137,140,138%5D,%22bitops-bitwise-and%22:%5B168,177,168,168,168%5D,%22bitops-nsieve-bits%22:%5B144,145,143,153,144%5D,%22controlflow-recursive%22:%5B91,80,80,77,79%5D,%22crypto-aes%22:%5B115,112,116,113,127%5D,%22crypto-md5%22:%5B85,87,85,86,86%5D,%22crypto-sha1%22:%5B86,90,89,93,86%5D,%22date-format-tofte%22:%5B219,224,224,233,225%5D,%22date-format-xparb%22:%5B171,174,173,187,172%5D,%22math-cordic%22:%5B199,219,207,213,205%5D,%22math-partial-sums%22:%5B224,219,217,232,221%5D,%22math-spectral-norm%22:%5B135,143,135,124,136%5D,%22regexp-dna%22:%5B399,402,405,389,402%5D,%22string-base64%22:%5B172,181,176,174,172%5D,%22string-fasta%22:%5B237,253,243,243,251%5D,%22string-tagcloud%22:%5B260,263,262,262,260%5D,%22string-unpack-code%22:%5B223,229,241,230,226%5D,%22string-validate-input%22:%5B191,209,205,180,190%5D%7D
+[epd]: http://dromaeo.com/?id=8305
+[vim]: http://vimperator.mozdev.org
+[vi]:  http://en.wikipedia.org/wiki/Vi

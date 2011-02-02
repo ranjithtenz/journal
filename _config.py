@@ -11,3 +11,4 @@ blog.name = "Journal of Eivind Uggedal"
 blog.description = blog.name
 blog.timezone = "Europe/Oslo"
 blog.posts_per_page = 10
+blog.auto_permalink.path = ":blog_path/:title"

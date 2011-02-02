@@ -17,3 +17,8 @@ blog.post_default_filters = {
         "markdown": "syntax_highlight, markdown",
 }
 blog.category_dir = "tags"
+
+#### Filter Settings ####
+filters.syntax_highlight.style = "trac"
+filters.syntax_highlight.preload_styles = ["trac"]
+filters.syntax_highlight.css_dir = ""

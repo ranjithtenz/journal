@@ -1,7 +1,7 @@
 <%page args="post"/>
 <div class="hentry">
   <abbr class="updated" title="${ post.date.isoformat() }">
-    ${post.date.strftime("%B %d, %Y at %I:%M %p")}
+    ${post.date.strftime("%Y-%m-%d")}
   </abbr>
   <h2>
     <a href="${post.permapath()}" rel="bookmark" title="Permanent Link to ${post.title}">${post.title}</a>

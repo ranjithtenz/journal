@@ -1,0 +1,113 @@
+---
+categories: django, calendar, stdlib
+date: 2009/03/14 12:00:00
+title: Creating a Flexible Monthly Calendar in Django
+---
+I had a set of items which needed to be browsable by date, so naturally I
+turned to Django's [date-based generic views][dbg]. I imagined the
+[monthly archives][mag] would be more informative if I rendered them as a
+monthly calendar with items inlined. I took a look at existing
+reusable apps providing calendar functionality for Django like
+[django-schedule][dsc] and
+[django-swingtime][dsw], but both seemed to complex (implementing event models
+with start and stop times) for my use case. [django-calendar][dca] looked more
+like what I was trying to accomplish, but sadly had not been maintained the
+last year and a half.
+
+Luckily Python 2.5 introduced [HTMLCalendar][phc] in its `calendar` module
+which can easily render a HTML calendar for a given month. By inheriting from
+this class one can easily extend its functionality to display objects in their
+appropriate day cell. What follows is a simple calendar class for displaying
+workouts on the days they were performed:
+
+    #!python
+    from calendar import HTMLCalendar
+    from datetime import date
+    from itertools import groupby
+
+    from django.utils.html import conditional_escape as esc
+
+    class WorkoutCalendar(HTMLCalendar):
+
+        def __init__(self, workouts):
+            super(WorkoutCalendar, self).__init__()
+            self.workouts = self.group_by_day(workouts)
+
+        def formatday(self, day, weekday):
+            if day != 0:
+                cssclass = self.cssclasses[weekday]
+                if date.today() == date(self.year, self.month, day):
+                    cssclass += ' today'
+                if day in self.workouts:
+                    cssclass += ' filled'
+                    body = ['<ul>']
+                    for workout in self.workouts[day]:
+                        body.append('<li>')
+                        body.append('<a href="%s">' % workout.get_absolute_url())
+                        body.append(esc(workout.title))
+                        body.append('</a></li>')
+                    body.append('</ul>')
+                    return self.day_cell(cssclass, '%d %s' % (day, ''.join(body)))
+                return self.day_cell(cssclass, day)
+            return self.day_cell('noday', '&nbsp;')
+
+        def formatmonth(self, year, month):
+            self.year, self.month = year, month
+            return super(WorkoutCalendar, self).formatmonth(year, month)
+
+        def group_by_day(self, workouts):
+            field = lambda workout: workout.performed_at.day
+            return dict(
+                [(day, list(items)) for day, items in groupby(workouts, field)]
+            )
+
+        def day_cell(self, cssclass, body):
+            return '<td class="%s">%s</td>' % (cssclass, body)
+
+Note that we have overwritten `formatmonth()` to store the year and month it was
+called with. This is so that we can use them for comparison against our workout
+objects in `formatday()`. `formatday()` itself should be self explanatory -- all
+it does is to build different table cells depending on which day it is and if
+there are any workouts this day. `group_by_day()` builds a dictionary with the
+day of the month as key and any workouts for that day as its value.
+It's also important to note that we've escaped potential user generated content
+(`workout.title`).
+
+The extended WorkoutCalendar can then either be used by creating a custom
+template tag or by using it in a standard Django view:
+
+    #!python
+    from django.shortcuts import render_to_response
+    from django.utils.safestring import mark_safe
+
+    def calendar(request, year, month):
+      my_workouts = Workouts.objects.order_by('my_date').filter(
+        my_date__year=year, my_date__month=month
+      )
+      cal = WorkoutCalendar(my_workouts).formatmonth(year, month)
+      return render_to_response('my_template.html', {'calendar': mark_safe(cal),})
+
+You can see that we've marked the calendar as safe and Django will therefore
+not escape it by default when rendered in a view:
+
+    #!html+django
+    {{ calendar }}
+
+The result of such a calendar implementation could look like the
+following:
+
+![Example workout calendar][img]
+
+Why not make this into a reusable app with a generic view for rendering
+a calendar instead of a month list? Every calendar view of certain
+objects will have different requirements. By building on `HTMLCalendar` one
+can develop simple to complex calendars with very little effort.
+
+
+[dbg]: http://docs.djangoproject.com/en/dev/ref/generic-views/#date-based-generic-views
+[mag]: http://docs.djangoproject.com/en/dev/ref/generic-views/#django-views-generic-date-based-archive-month
+[dsc]: http://code.google.com/p/django-schedule/
+[dsw]: http://code.google.com/p/django-swingtime/
+[dca]: http://code.google.com/p/django-calendar/
+[phc]: http://docs.python.org/library/calendar.html#calendar.HTMLCalendar
+[img]: /img/workout.calendar.png

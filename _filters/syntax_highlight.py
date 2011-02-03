@@ -9,7 +9,7 @@ css_files_written = set()
 
 code_block_re = re.compile(
     r"<pre><code>"
-    r"(?:#\!(?P<lang>\w+)\n)?"
+    r"(?:#\!(?P<lang>[\w\+]+)\n)?"
     r"(?P<code>.*?)\n"
     r"</code></pre>", re.DOTALL
 )

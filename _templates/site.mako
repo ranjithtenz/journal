@@ -9,7 +9,9 @@
     ${self.header()}
     ${next.body()}
     <p id="elsewhere">
-      TODO
+% for service, url in bf.config.blog.author.elsewhere:
+      <a href="${ url }">${ service }</a>
+% endfor
     </p>
     <p id="footer">
       ${self.footer()}

@@ -13,6 +13,11 @@ blog.author = cache.HierarchicalCache()
 blog.author.name = "Eivind Uggedal"
 blog.author.email = "eivind@uggedal.com"
 blog.author.url = "http://uggedal.com/"
+blog.author.elsewhere = [
+    ('@uggedal', 'http://twitter.com/uggedal/'),
+    ('Was it up?', 'http://wasitup.com/'),
+    ('Media Queries', 'http://mediaqueri.es/'),
+]
 
 blog.name = "Journal of %s" % blog.author.name
 blog.description = blog.name

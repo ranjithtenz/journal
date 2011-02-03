@@ -1,7 +1,7 @@
 <span class="author vcard">
   Written by
-  <a class="url fn" href="TODO">TODO</a>
-  &lt;<a class="email" href="mailto:TODO">TODO</a>&gt;.
+  <a class="url fn" href="${ bf.config.blog.author.url }">${ bf.config.blog.author.name }</a>
+  &lt;<a class="email" href="mailto:${ bf.config.blog.author.email }">${ bf.config.blog.author.email }</a>&gt;.
 </span>
 Powered by
 <a href="http://www.blogofile.com">Blogofile</a>.

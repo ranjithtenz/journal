@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from blogofile import cache
 
 site.url = "http://journal.uggedal.com"
 
@@ -7,7 +8,11 @@ blog = controllers.blog
 
 blog.enabled = True
 blog.path = ""
-blog.name = "Journal of Eivind Uggedal"
+blog.author = cache.HierarchicalCache()
+blog.author.name = "Eivind Uggedal"
+blog.author.email = "eivind@uggedal.com"
+blog.author.url = "http://uggedal.com/"
+blog.name = "Journal of %s" % blog.author.name
 blog.description = blog.name
 blog.timezone = "Europe/Oslo"
 blog.posts_per_page = 10

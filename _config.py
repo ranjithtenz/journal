@@ -17,6 +17,8 @@ blog.author.url = "http://uggedal.com/"
 blog.name = "Journal of %s" % blog.author.name
 blog.description = blog.name
 
+blog.analytics_key = "UA-1857692-3"
+
 blog.timezone = "Europe/Oslo"
 blog.posts_per_page = 10
 blog.auto_permalink.path = ":blog_path/:title"

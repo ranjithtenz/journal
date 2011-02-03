@@ -23,7 +23,7 @@
                             "javascript'%3E%3C/script%3E"));
   </script>
   <script type='text/javascript'>
-    var pageTracker = _gat._getTracker("TODO");
+    var pageTracker = _gat._getTracker("${ bf.config.blog.analytics_key }");
     pageTracker._initData();
     pageTracker._trackPageview();
   </script>

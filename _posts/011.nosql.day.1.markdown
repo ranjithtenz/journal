@@ -1,0 +1,445 @@
+---
+categories: nosql, nosqleast, 2009, atlanta, conference, database, persistence, voldemort, dynomite, couchdb, riak, cassandra, mongodb, tin
+date: 2009/10/29 12:00:00
+title: NoSQL East 2009 - Summary of Day 1
+---
+
+After using a non-relational database while creating [was it up?][] I've
+learned first hand that MySQL or PostgreSQL isn't always the best
+solution. Since _was it up?_ is a web monitoring service it needs to
+be distributed to minimize the likelihood of downtime.
+[Tokyo Tyrant][] was therefore used with a master to master replication
+setup so that write operations still could be carried out if one node
+went down.
+
+But Tokyo Tyrant isn't the only database solution with a distributed
+nature for handling scaling or high availability demands. I
+therefore went all the way to Atlanta, GA for the [NoSQL East][]
+conference to learn more about these other offerings in the
+non-relational database world (sponsored by my generous employer:
+[BEKK][]). What follows is the highlights of the talks that I attended.
+
+
+### Cambrian Explosion--John Willis
+
+John have done work on [Ubuntu One][] which is [Euqalyptus][] based.
+He's focusing on operational side of cloud computing. What are the new data
+centers going to look like?
+The average guy can now actually use a DSL that abstracts this phenomenoal
+technology. Argues that we are at the base of an explosion of innovation
+driven primarily by four factors:
+
+* Abstract and fault tolerant components:
+  the components are abstracted, so they are easy to put together for
+  consumers.
+* Unlimited infrastructure:
+  we never run out, there is no shortage of resources since they are
+  reproducible and duplicateable.
+* World wide collaboration:
+  you can have loads of people working on projects together without
+  never meeting each other (prevalent in the open source world).
+* Changes in intellectual property:
+  open source is the primary driver in changing how we see intellectual
+  property.
+
+NoSQL was a great name to get the conversation started. But it's not
+an either or. You'll have to think about the use cases first. Not
+everything fits in the standard table and column layout of relational
+systems.
+
+John started with big data in the 70s when he worked on a backup system
+with a [IBM 3850][]
+which had 500GB of data. This setup costed $20,000,000 back then. Contrast
+this with a Western Digital HDD from 2009 with 500GB storage for $50.
+
+How did we get to todays world where big data is getting easier and
+cheaper than yesterday?
+
+* [Paxos][] separate safety properties from liveness properties.
+* [CAP Theorem][].
+* Microsoft's work with storage systems like [Boxwood][].
+* Google's papers on [GoogleFS][], [Map/Reduce][], and [BigTable][].
+* Amazon's work on [Dynamo][] and S3 (eventual consistency).
+* Yahoo's work on Map/Reduce with Hadoop (first broadly
+  available offering).
+* Cloudera's further work with abstracting Hadoop.
+
+
+### Voldemort--Geir Magnusson--Gilt Groupe
+
+The traditional e-commerce data model leads to denormalization for
+performance and decoupling purposes. For instance, in order to saperate user
+data and credit card data one can not use joins anymore. Once you
+go down this path your standard tooling breaks apart (ORMs).
+In the end of the day one have to start looking into other persistence
+solutions.
+
+[Voldemort][] is a [distributed map][] with [consistent hashing][] (so that
+one easily can add new nodes without rebuilds), [vector clocks][]
+to determine version ordering, a pluggable storage backend, and has no
+master (no single point of failure).
+
+Voldemort has several choices of serialization and storage backends:
+
+* Serialization: String, JSON, Protocol Buffers, Thift
+* Serialization: BDB, MySQL, memory, Hadoop, MongoDB.
+
+The basic architecture consists of (from top to bottom) a client API layer,
+conflict resolution layer, serialization layer, routing and read repair layer,
+failover layer, and a storage layer.
+
+Data is organized into named stores that can have independent configurations
+with regards to the storage engine and request routing settings.
+
+The client API is simply:
+
+* `get(key)`
+* `getAll([key1, key2, key3, keyN])`
+* `put(key, value, version)`
+* `delete(key)`
+* `delete(key, version)`
+
+Gilt Groupe is an invite only e-commerce store for very high end products.
+It has millions of page views each hour with fast ramp up, high volume of
+transactions (registration, login, wait list),
+and high volume shared state (add to chart, checkout).
+The challenge is that the traffic spikes enormously when the products goes
+on sale a particular time each day. They could actually almost turn off their
+systems half of the day.
+
+The backend is Rails based with several share nothing app servers, which scales
+horizontally with [Zeus][] as a load balancer in front.
+The problem is (as always) that their single PostgreSQL DB is the
+large bottleneck when sufficient Rails servers are running.
+They solved this by using Voldemort for the shopping cart and order processing
+system, while still keeping PostgreSQL at the bottom of the stack. They chose
+Voldemort since it was the only solution freely available which were
+in production use at the time.
+
+While deciding on what storage backend to use they looked at [Tokyo Cabinet][].
+The problem was that when the dataset was larger than memory performance
+decreased vastly. [BDB][] worked better since it persist data in memory to disk
+asynchrounously (like Redis).
+
+Gilt Group did not abandon SQL entirely, so their solution is AlongsideSQL
+instead of NoSQL.
+
+
+### Dynomite--Cliff Moon--Microsoft/Powerset
+
+[Dynomite][] is a distributed key/value store modeled after the Dynamo
+paper from Amazon, written in Erlang.
+
+It's good at storing large data as it was designed
+for storing images.
+At Microsoft/Powerset they used it to mirror Wikipedia
+and Flickr's photos. If you do a search on Bing which lists pictures,
+the images are served from Dynomite.
+
+<table class="hanging">
+  <caption>
+    Cliff Moon talks about Dynomite. Picture taken by
+    <a href="http://www.flickr.com/photos/pauls/">Paul Stamatiou</a>. 
+  </caption>
+  <tr>
+    <td>
+      <a href="http://www.flickr.com/photos/pauls/4062111256/" title="Cliff Moon talks about Dynomite, by Paul Stamatiou, on Flickr"><img src="http://farm3.static.flickr.com/2424/4062111256_30b539ae4c.jpg" width="500" height="332" alt="Cliff Moon talks about Dynomite"></a>
+    </td>
+  </tr>
+</table>
+
+Dynomite uses [merkle tree][] replication, cluster wide [quorum][] settings
+(the author regrets this choice), vector clock read repairs,
+physical token partitioning scheme (buckets are real buckets on disk),
+loads of protocol adapters (binary Erlang, Thift, ASCII), and
+pluggable storage backends.
+
+After Microsoft acquired Powerset Cliff could not push code back to the
+Dynomite project (not even in his free time). The project has therefore
+stagnated. He has written several improvments since then, but he's
+unable to push them upstream. Hopefully the lawyers at Microsoft
+will allow him to publish these changes in the future.
+It's therefore not advised to use Dynomite right now as there are three
+disparate versions.
+
+The architecture described in the Dynamo paper is very generic,
+one could distribute any stateful service and not just storage.
+A Dynomite framework could be created where logic is distributed
+alongside data--persistence for any data model. The advantages
+of such a system is lower latency and you don't have to rely on a
+stateless app server. The disadvantages is that it would only
+work for purely RESTful applications (since one would need
+URIs that maps to keys of the store).
+
+
+### CouchDB--Mike Miller--Cloudant
+
+[CouchDB][] is a schema-free document database written in Erlang.
+It's primary focus was robustness, high concurrency, and
+fault tolerance. One key differentiator compared to other
+systems is its bi-directional incremental replication.
+CouchDB now has over 100 production users, 3 books are
+in writing, and the community is vibrant.
+
+<table class="hanging">
+  <caption>
+    Mike Miller talks about CouchDB.
+    Picture taken by
+    <a href="http://www.flickr.com/photos/pauls/">Paul Stamatiou</a>. 
+  </caption>
+  <tr>
+    <td>
+      <a href="http://www.flickr.com/photos/pauls/4062111466/" title="Mike Miller talks about CouchDB, by Paul Stamatiou, on Flickr"><img src="http://farm3.static.flickr.com/2619/4062111466_54d62a652d.jpg" width="500" height="332" alt="Mike Miller talks about CouchDB"></a>
+    </td>
+  </tr>
+</table>
+
+CoucbDB's documents are JSON based and they can have binary
+attachments. Each document has a revision which are
+deterministically generated from the document content.
+
+CoucbDB is very robust since it never overwrites previously
+written data. There are therefore not a repair step after
+a server crash, and one can take backups with `cp`.
+
+Concurrency is another of the pillars in CoucbDB's design.
+It uses Erlangs approach with lightweight processes which
+means one process per TCP connection. The architecture is
+also lock free.
+
+The API is REST based, using standard verbs:
+GET,
+PUT,
+POST, and
+DELETE.
+
+Map/reduce views are used for generating persistent representations
+of document data. These are generally written in JavaScript.
+A really interesting feature of the views are that they are generated
+incrementally. The views are stored in a B-tree and kept up-to-date
+when new data is added.
+
+The bi-directional replication is peer based (two nodes).
+One can replicate a subset of documents meeting a certain criteria.
+The replication happens over HTTP, which makes replication across
+datacenters easy and secure.
+In a multi-master replication setup CouchDB can deterministically
+choose which revision is the winner (with the loosing revision
+saved as well).
+
+One of the first adopters of CouchDB of scale was BBC. They needed
+flexibility in schema and robustness. They used CouchDB as a
+simple key/value store for their existing application infrastructure.
+It has proven to be robust in production for several years and
+continutes to scale to their demands of data and concurrency.
+
+Meebo chose CoucbDB since it was flexible, easily
+queryable, and could scale to hundred of millions of documents.
+They wrote their own sharding library (sitting on HTTP) called
+[Lounge][] (Nginx and Twisted based). They are generally happy
+with CouchDB but wishes CouchDB would be more performant.
+
+Scoopler is a realtime aggregation service with large and
+rapidly growing data volume. The schema flexibility was
+crucial when they selected CouchDB.
+
+A unnamed realtime analytics service migrated from a 40+ table
+PostgreSQL setup to a single CoucbDB document type with only
+two views.
+
+Ubuntu 9.10 includes the Ubuntu One system which stores user's
+address books in CouchDB. Replication is the killer feature
+in this scenario.
+
+
+### Riak--Justin Sheehy--Basho Technologies
+
+[Riak][] is a document oriented database and decentralized key/value store.
+It's influenced by Amazon Dynamo, CAP Theorem, and the Web (the most
+successful distributed system to date), and operational experience with
+large networks (growth, traffic spikes).
+
+Riak emphasizes write availability. Unlike other Dynamo based systems
+Riak supports map/reduce. Therefore most of the work happens where
+the data sits. Map/reduce are more scoped when used in Riak than with
+Hadoop and CouchDB. One application request can process a small
+and efficient map/reduce function.
+Traversing links on the Web is a perfect match for map/reduce jobs.
+All of the relation following can be a map/reduce function.
+
+The CAP theorem seems to be used in an overly simplified manner.
+It's not just: "pick two of consistency, availability, and partition
+tolerance". It's about what compromises you'd like to make, which you
+want to prioritize: "choose your own levels".
+
+Scalable is not about big and not about fast. It's about understanding
+and predicting how much it's going to cost you to get better.
+It tells you how much you have to spend to get more.
+The point is that a statement about scalability has to be prefixed
+for what and how it's scalable.
+
+Distributed just means that it's composed of multiple systems working
+saparately but in harmony. It's also useful to know if a system
+is decentralized and/or homogeneous (no bottlenecks, no single points
+of failures, no special nodes).
+
+Designing systems with individual failures in mind is a plan for
+predictable success. One have to assume failures will happen--be
+resilient.
+
+Eventually consistent: brief sacrifices of consistency in failure
+conditions. This is not an excuse for losing user data.
+
+
+### Cassandra--Arin Sarkissian--Digg
+
+Digg is probably the only large site which have [Cassandra][] in production
+(Facebook runs a forked version). Up until now Digg has used a
+normal LAMP stack. Step one was to shard MySQL. First vertical
+partitioned, then horizontally partitioned. The database is no longer
+relational (no joins). They went out and looked at alternatives.
+They wanted something open source, scalable, performant, and easily
+administrable.
+
+They picked Cassandra because the promise of easier administration,
+no single point of failure, more flexible than a simple key/value store,
+very fast writes, the community was growing, and it was Java based (3 out 4
+of the people in the team was comfortable with Java).
+
+Digg implemented the green flag feature (users you know have dugg this
+article) in Cassandra as a proof of concept. They did a dark
+launch with MySQL running alongside. First they just wrote data to
+Cassandra, then they enabled reading from Cassandra.
+
+Based on the results of the proof of concept Digg are going to port
+the entire application to Cassandra.
+So far they have an internal prototype of this. They test the
+prototype on live data by reading logs with JSON items
+written by [Scribe][] from the live site. They also hit the test
+cluster when an actual request comes in to the live site (also
+through the Scibe powered log). An replay feature is also
+implemented which can send historical request to the test
+cluster.
+
+Crated [Lazyboy][], a ORM like interface to Cassandra with easy
+CRUD and views for handling secondary columns.
+
+The new architecture of Digg has a services layer in Python
+between the PHP frontend and Cassandra, Memcached, and MySQL
+at the bottom. Communication from PHP to Python is using Thrift.
+
+Digg is going to continue to use MySQL some places. Use the right
+tool for the job.
+
+
+### MongoDB--Kyle Banker--10gen
+
+[MongoDB][] is JSON document oriented database. These documents are
+stored in the database as BSON (binary JSON). BSON is efficient,
+fast, and is richer in type than JSON (i.e. regex
+support). Documents are grouped in collections which are analogous
+to relational tables, but are schema free.
+
+GridFS is a specication for storing large binary files
+like images and videos in MongoDB. Every document has a 4MB limit. GridFS
+chuncs the large files into such 4MB parts inside a collection,
+with a saperate metadata collection. MusicNation.com
+stores all music and video alongside the application data in
+MongoDB (about 1TB).
+
+MongoDB has its own wire protocol with socket drivers for several
+languages. The drivers serializes the data to BSON before transfer.
+
+Replication is used for failover and redundancy. Most commonly
+a master-slave setup is used. It's also possible to setup a
+replica pair architecture.
+
+MongoDB provides a custom query language which should be as
+powerful as SQL. MongoDB understands the internal structures
+of its documents which enables dynamic queries. Map/reduce
+functions are also supported in the query language.
+
+BusinessInsider.com has been using MongoDB for two years
+with 12M page views/month. They like the simplification
+of the data model. Posts for instance have embedded comments.
+They also store real-time analytics in MongoDB which enables
+fast inserts and eased data analysis with dymanic queries.
+Uses a single MongoDB database server, 3 Apache web servers,
+and Memcached caching only on the front page.
+
+TweetCongress.org are users of MongoDB and likes that code
+defines the schema, and one can therefore version control the
+schema. They use a single master with snapshots on a 64-bit
+EC2 instance.
+
+SourceForge.net had a large redesign this summer where
+they moved to MongoDB. Their goal was to store
+the front pages, project pages, and download pages in a single
+document. It's deployed with one master and 5-6 read-only
+slaves (obviously scaled for reads and reliability).
+
+
+### Tin--Tim Anglade--GemKitty LLC
+
+Sequential data is data this is primarily oriented along
+one column. I.e. stocks, bank transactions, sensor data,
+Twitter feeds, and Facebook walls are all ordered along time.
+
+Oracle and SQL Server was pushed to the limit at NASDAQ.
+The architecture was optimized for writes, but was not
+very good at reading it back. Petabytes of data accumulated each
+year. This was resolved by outputting data to
+a CSV file, upload the file to S3 with an easily
+guessable name, and serve the file over HTTP.
+Stupidly simple.
+
+Sharding in [Tin][] is done by splitting your data into text files.
+The file names needs to be guessable, logical, and not
+too large (HTTP limits). Too large files hinders redundancy.
+
+REST is the interface for querying. Standard URLs with
+shortcuts (served by Sinatra), i.e. http://stocks.com/GOOG/today(.txt)
+The HTTP Range header is used for fetching specific parts of these files.
+
+
+
+[was it up?]: http://wasitup.com
+[Tokyo Tyrant]: http://1978th.net/tokyotyrant/
+[NoSQL East]: http://nosqleast.com
+[BEKK]: http://bekk.no
+
+[Ubuntu One]: https://one.ubuntu.com
+[Euqalyptus]: http://open.eucalyptus.com
+[IBM 3850]: http://en.wikipedia.org/wiki/IBM_3850
+[Paxos]: http://en.wikipedia.org/wiki/Paxos_algorithm
+[CAP Theorem]: http://www.julianbrowne.com/article/viewer/brewers-cap-theorem
+[Boxwood]: http://storagemojo.com/2006/10/30/microsofts-secret-google-killer-boxwood-pt-i/
+[GoogleFS]: http://labs.google.com/papers/gfs.html
+[Map/Reduce]: http://labs.google.com/papers/mapreduce.html
+[BigTable]: http://labs.google.com/papers/bigtable.html
+[Dynamo]: http://en.wikipedia.org/wiki/Dynamo_(storage_system)
+
+[Voldemort]: http://project-voldemort.com/
+[distributed map]: http://en.wikipedia.org/wiki/Distributed_hash_table
+[consistent hashing]: http://en.wikipedia.org/wiki/Consistent_hashing
+[vector clocks]: http://en.wikipedia.org/wiki/Vector_clock
+[Zeus]: http://www.zeus.com/products/load-balancer/index.html
+[Tokyo Cabinet]: http://1978th.net/tokyocabinet/
+[BDB]: http://www.oracle.com/database/berkeley-db/je/index.html
+
+[Dynomite]: http://github.com/cliffmoon/dynomite
+[merkle tree]: http://en.wikipedia.org/wiki/Hash_tree
+[quorum]: http://en.wikipedia.org/wiki/Quorum_(Distributed_Systems)
+
+[CouchDB]: http://couchdb.apache.org/
+[Lounge]: http://tilgovi.github.com/couchdb-lounge/
+
+[Riak]: http://riak.basho.com/
+
+[Cassandra]: http://incubator.apache.org/cassandra/
+[Scribe]: http://github.com/facebook/scribe
+[Lazyboy]: http://github.com/digg/lazyboy
+
+[MongoDB]: http://www.mongodb.org
+
+[Tin]: http://github.com/timanglade/tin/

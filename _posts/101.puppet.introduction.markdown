@@ -1,0 +1,11 @@
+---
+categories: puppet, devops, automation, configuraiton management
+date: 2011/01/01 12:00:00
+title: Introduction to Puppet
+draft: true
+---
+Reasons to use Puppet in stead of Chef:
+* Bootstrap is easy (apt-get install)
+* Restricted language makes you think through what you need to do
+  and makes it hard to create quick hacks.
+* A client-server installation is more lightweight (RabbitMQ, CouchDB, Solr)

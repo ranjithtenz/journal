@@ -2,7 +2,6 @@
 * Check pagination and style it.
 * Check that all urls matches original urls.
 * Favicon.
-* Remove RSS.
 * Advertise tag atom feeds in <head>.
 * Use same urls for atom feeds as old site.
 * Create 404.

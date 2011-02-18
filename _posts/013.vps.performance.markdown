@@ -1,0 +1,389 @@
+---
+categories: vps, slicehost, linode, prgmr, rackspace, ec2, slice, performance, django, postgresql, sqlite, sqlbench, unixbench
+date: 2009/11/29 12:00:00
+title: VPS Performance Comparison
+---
+
+UPDATE: The scripts used for benchmarking, graphing, and all the raw data
+can be found over at my [GitHub repository][githubrepo]. Be aware that the
+graphs presented here has an Y-axis which goes from the minimum to the maximum
+value and not from 0 to maximum.
+
+My latest side project, [was it up?][]--a free web monitoring service, required a
+number of VPS instances due to its distributed nature. I previously conducted
+a [comparison of Slicehost and Prgmr][previous]. This time I needed to purchase
+several instances and therefore went out and did a more throughout and wider
+comparison of which VPS provider would give me the most bang for my buck.
+I targeted VPS offerings in the $20 space (and the cheapest Amazon EC2 option):
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Monthly cost</th>
+    <th>Memory</th>
+    <th>Memory/$</th>
+    <th>Storage</th>
+    <th>Transfer</th>
+  </tr>
+  
+  <tr>
+    <td><a href="http://slicehost.com">Slicehost</a></td>
+    <td>$20.00</td>
+    <td>256MB</td>
+    <td>12.80MB</td>
+    <td>10GB</td>
+    <td>100GB</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://linode.com">Linode</a></td>
+    <td>$19.95</td>
+    <td>360MB</td>
+    <td>18.05MB</td>
+    <td>16GB</td>
+    <td>200GB</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://prgmr.com">Prgmr</a></td>
+    <td>$20.00</td>
+    <td>1024MB</td>
+    <td>51.20MB</td>
+    <td>24GB</td>
+    <td>160GB</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://www.rackspacecloud.com">Rackspace</a></td>
+    <td>$21.90</td>
+    <td>512MB</td>
+    <td>23.38MB</td>
+    <td>20GB</td>
+    <td>--</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://aws.amazon.com/ec2/">Amazon</a></td>
+    <td>$62.05</td>
+    <td>1.7GB</td>
+    <td>28.05MB</td>
+    <td>160GB</td>
+    <td>--</td>
+  </tr>
+
+</table>
+
+Note that the monthly cost of Rackspace and Amazon's offerings does not
+include any data transfer.
+At $0.22/$0.08 out/inn per GB you'd have to pay an additional $15
+per month for 50GB of in-bound and 50GB out-bound transfers. Amazon charges
+$0.17/$0.10 out/inn per GB of bandwidth which would amount to $13.5 extra
+per month for 50GB transfer both ways.
+The following table
+shows the specifications of the various providers' systems:
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Arch</th>
+    <th>CPU</th>
+    <th>VCPUs</th>
+  </tr>
+  
+  <tr>
+    <td><a href="http://slicehost.com">Slicehost</a></td>
+    <td>x86_64</td>
+    <td>Opteron 2212</td>
+    <td>4</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://linode.com">Linode</a></td>
+    <td>i686/x86_64</td>
+    <td>Xeon L5420</td>
+    <td>4</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://prgmr.com">Prgmr</a></td>
+    <td>x86_64</td>
+    <td>Opteron 2347 HE</td>
+    <td>1</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://www.rackspacecloud.com">Rackspace</a></td>
+    <td>x86_64</td>
+    <td>Opteron 2347 HE</td>
+    <td>4</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://aws.amazon.com/ec2/">Amazon</a></td>
+    <td>i686</td>
+    <td>Xeon E5430</td>
+    <td>1</td>
+  </tr>
+
+</table>
+
+Linode is the only provider which gives you a choice between a
+32-bit and 64-bit architecture. I therefore performed all
+tests on both platforms on Linode. Amazon's smallest VPS is
+32-bit while all other providers uses 64-bit [DomU's][domu].
+
+Prmgmr and Amazon gives you access to 1 virtual CPU while
+Slicehost, Linode, and Rackspace gives you 4. More VCPUs is
+not necessarily better though. With as many VCPUs as physical
+CPUs a single domU can burst to the full system capacity. If
+the system gets busy though, the amount of VCPUs could lead
+to increased context switching. 4 VCPUs should therefore give
+you better ideal performance, while 1 VCPU gives you a more
+stable performance profile.
+
+Aside from cost, performance was the most important criteria
+for me when selecting a provider for [was it up?][].
+5 different benchmarks were carried out every 3 hours over a week, leading
+to 56 runs each. The slowest system used up to 3 hours to complete all 5
+benchmarks. Weeklong benchmarking was used to account for variance in
+host load during the day/night and week. I speculated that the
+host systems could be more utilizied on weekdays when people in the US
+were awake (all providers under test were US based).
+At the end of this article you'll find a [table summarizing the averages
+and standard deviations][summarytable] of the 5 benchmarks on all providers.
+
+
+<table class="hanging">
+  <caption>Unixbench single process score (higher is better).</caption>
+  <tr>
+    <td>
+      <img src="http://chart.apis.google.com/chart?chxt=x,y&amp;chd=e:MUMMLbLKMPMQMvMWMuMYMIA5BkBHBsBgBUBtBXCAOWOROPNpOFOMOaNUOAN4F3G4GnGeGyE5EIEwAAPaP7PkPhPAPWPsPbPfPUPxPZPDPeQHP4QB,GnGrGEGNGUGxGqGsGmGfGtGwGyGtGuGuGoGtGxGRGhGIGXGdGiGkGnGeGiGkGnGxGpGhGeGkGfGTGkGSGjGiGqGhGRGoGiGiGhGqGkGkGiGaGrGN,tjt8tRtytqt2tstvtmtutvt0tytttwt8tMtytutrtstotktXtrtltetmtdtbtOtStotZtctYtjtftctdtgtethtRtltotltatbtbtltltrtStWtY,.1.t.f.Z.H.H.T.j.0-e.I--.X.j.P.Q.g.d.F-7.g.m.l.h.N.u-z-7.Z.A.e.w.T-w.o.U.3.s.E...F.M.l.W9Z-9.e.k.y-8.O-d-r-7-h.I,C4DFC4C7DLC4CsDCC7CuCzC0CuC4CxCyClCoCxCtCgC7CoCmCgChClCrCzCxC0CrCuC9CyCxCkCpCmCvCoCjCkCxClCWCbCsCoCgCpCsCuCnCyC4,PrPyPyQBPtPrPjPbPyP3PmP7PvPdP0PxPqPqPoPhPlPtP8QbQgQBQbPyPiRNPpQQPvQLP0PqQFPtQDP2QMQGP7P9QBP-P7QIPHPxOwPQPdPgQLP1&amp;chco=edc240,afd8f8,cb4b4b,4da74d,f8afe8,4066ed&amp;chs=500x300&amp;cht=lc&amp;chxl=0:|Fri|Sun|Mon|Wed|Thu|Fri|1:|188|295|402|509|616|723&amp;chls=2.5,1.0,0.0|2.5,1.0,0.0|2.5,1.0,0.0&amp;chdl=Slicehost|Prgmr|Linode+x86_64|Linode+i686|Amazon|Rackspace&amp;chdlp=b">
+    </td>
+  </tr>
+</table>
+
+**Single process Unixbench** were the first test carried out.
+I had to [patch][unixbenchpatch] Unixbench to disable a failing
+test and graphical tests. The scores
+reported are points, were a higher score is better than a lower. To my
+surprise Amazon, the most expensive offering, were clearly the loser
+on this workload. All providers had fairly little variance on this test,
+except for Slicehost who even dipped below Amazon's scores at some instances.
+Could this be the first signs of a very full host? Or maybe my neighboring
+nodes got slashdotted? The clear winner is Linode on both 32 and 64-bit
+architectures.
+
+<table class="hanging">
+  <caption>Unixbench 4 parallel processes score (higher is better).</caption>
+  <tr>
+    <td>
+      <img src="http://chart.apis.google.com/chart?chxt=x,y&amp;chd=e:InI7ITI3ImJQJCI1JIIxI0A7BeBABvAABbA0BiGNMoMcMhMmMTMUMsMLMLItENEMEADwESD-BLIeMwRBQ1QuQgQUQjRAQpQvQuQmQtQiQ1RmRBRU,DEDFC1DJC.DHDIDDDFC-DJDIDIDIDHDFDDDDDECqDEC7C8C-DBDDDFC.DDDDDEDDDCDEDCDCDDDFDDC-DBDCDGDFC5DGDEDFDJDHDGDEDDDcDFDA,vNvrv-wLwqvavywGwsvWvtvovRvqwzwjvgvqwavpvxv2v7u4vOvdurvivzvpvOvOvTvUvJvVv1v2vYvIvavivMvnu7v3vfv7vswNvkvAvbvvuxvh,-X7m82-g9B898p8-8z9Z8S9-9O7w..-O9o9W9z769I8W9Y9i9H858r9x9g9W9v8s8z969s9z929M9s9U9P9R9F8n-N8m898b9j8a9M8p95878U-A,ByB0BtBuBxBrBvBtBrBsBoBsBsBnBoBrBmBpBnBnBmBlBkBnBfBgBmBdBmBtBnBlBlBqBkBnBmBoBqBmBnBiBoBiBpBiBrBhBiBnBnBmBiBiBmBm,YFYWYYYaYTYRX2X0YSYRYUYSYWX8YLYWYVYTYJYBYSYKXpXmYSYYYSYFXbXaX6XNXOXWXoXXXyXJW8XOXVW9WXWLXYXGXVXKUSURT.UgU6XMXNW9&amp;chco=edc240,afd8f8,cb4b4b,4da74d,f8afe8,4066ed&amp;chs=500x300&amp;cht=lc&amp;chxl=0:|Fri|Sun|Mon|Wed|Thu|Fri|1:|215|460|705|950|1195|1440&amp;chls=2.5,1.0,0.0|2.5,1.0,0.0|2.5,1.0,0.0&amp;chdl=Slicehost|Prgmr|Linode+x86_64|Linode+i686|Amazon|Rackspace&amp;chdlp=b">
+    </td>
+  </tr>
+</table>
+
+**Parallel Unixbench** followed. I had to [patch][unixbenchpatch] the
+Unixbench controller script to always use 4 parallel processes. Normally
+Unixbench selects how many processes to spawn depending on the amount of
+virtual CPUs the system has.
+
+Linode continues to impress with the best Unixbench scores for both its
+supported architectures. The results are similar for the single process
+benchmark, Amazon is slowest overall with Slicehost beeing the most
+unstable environment. Its important to note that both providers with
+only one virtual CPU, Prgmr and Amazon, has the lowest scores for both
+Unixbench tests.
+
+<table class="hanging">
+  <caption>SQL-bench on PostgreSQL. Runtime in seconds (lower is better).</caption>
+  <tr>
+    <td>
+      <img src="http://chart.apis.google.com/chart?chxt=x,y&amp;chd=e:XwbUZeZ7bUxBZiZYWFYUbkl5vc1MqYqBrSpxqquOpxaDYsW.YHZmZFaFXWXsjzfxe3hegUkipo...1T7ZmYRV5dJVoUVVBXDWNUoU.ZcS0P3VcVN,JcHZe5HgIFF8E6FNJRIsFRFDEXFoGLFPGiHPIgRNHPuaJ.KcIZFmIDJHFbF0FiivHqHXHwH4HDKRK4QHLeHVKoJiQBKeITNeNPKXHDI6IBMeLiNg,A8BPANATA0ALB4BsCPAuAPBuARAAAVAgDPAdBFAyAsA0A8FiCRGPK0G0EZCB7EEHCuBqEdBuB2BuCFCRBuD2DiEFMcBoCJDJCiHBFPB.BbGmKiEN,EiHwF8HVHHFJEXERE.IeFdQaFkF4EuEdGeE4LROLE0FuFPKTE0FiGPFyFbIBFsFkG6FqGLHRF6IgFqFRgPF6Toj7lvFPFgE6FZFPE2FqD6FPGmEi,NTM2NBMuNFNHNZNgM.NaNJM.NHNJNZNLM9NPM9NHNZM9NJNXNVNTNTM.NPNJM9MmNTM.NBMuM9NBNBNXNFMyM.M7M9NDM5M7NLM5M7NDMkM.NNNH,GiJHI7HNGmJoG4JTJyG9HyGwJeIJJXHDHRINJFKJJJG82a67v9J4ILJmJiK2J7SuunH.NVJwMFT5IbKPJVJTLVfiMaK9L9LoLqM.OcRBbuO5rDJN&amp;chco=edc240,afd8f8,cb4b4b,4da74d,f8afe8,4066ed&amp;chs=500x300&amp;cht=lc&amp;chxl=0:|Fri|Sun|Mon|Tue|Thu|Fri|1:|1125|1547|1969|2391|2813|3235&amp;chls=2.5,1.0,0.0|2.5,1.0,0.0|2.5,1.0,0.0&amp;chdl=Slicehost|Prgmr|Linode+x86_64|Linode+i686|Amazon|Rackspace&amp;chdlp=b">
+    </td>
+  </tr>
+</table>
+
+**SQL-bench on PostgreSQL** is a large single-threaded database benchmark
+created by the [MySQL project][mysqlbench]. I had to [patch][mysqlpatch] the
+suite to disable one test which did not run on PostgreSQL and decrease the
+ammount of some iterations to make the suite finish in a reasonable time.
+
+As we see from the graph, this benchmark varies greatly over time for most
+proviers. If we consult our summary table we note that 64-bit Linode
+has the best average time with 32-bit Linode in second place. Slicehost's
+average runtime is highest by a large margin. Amazon is clearly the most
+stable host in the SQL-bench tests with several orders of magnitude less
+standard deviation than other providers.
+
+<table class="hanging">
+  <caption>Django test suite on PostgreSQL. Runtime in seconds (lower is better).</caption>
+  <tr>
+    <td>
+      <img src="http://chart.apis.google.com/chart?chxt=x,y&amp;chd=e:YXcuXJWxgAXaXmYFXWXdXEZNe9j3c0eTdFgKeWgAn2XfWRbjXuXVZPYMZvZMbFe3cNfLb-jKhNiD..U4UQVuWCVhdeTuUUWFVWWBZ5eMbP6ITVU2,LVKcMGNxJiJLJOJkNHKYKsJZJaL9LYJ8JgJVJVMtNEY0NoMWLpMQJiKNJsJjJhKBJ8J9JzJfKCJyQKPIMCKHJzJ-LkKkJcKdJ.MPJoKGJUJ6JmOi,AeQSAHAXAaAXATAtAMBPAWAcAGAOAOAVFGAAAoAdASAnASBNBKBqIGEDELAPC0C1AgChFICLCWAwAoBDA9A3ClCDAkAhA2AjArB7BxAfA5BPCZBg,DFDRDwDpDgC5DnDjDLDODaGCDRDQDnDJCyEIGpEADSDSC3DAC-DlD2ECD0EEDBDXEADXD8DFDnEEDUDhDhEpEWDdLZDBDLDPC-DPDLDoDsDoE6Dd,PBPFPTO6PFPPPPO.PUPePLPQPJPbPaPbPqPiPhPbP3PiP8PwP0P1PqPzPdPXPfPrPiPhPePcPWPrPnPhPfPdPyPWPoPzPuPqPcPoQLPwPhPvPzPX,K.LRLRLGLDLNLJLULKLILHLCLFLKLqLGK9LALQLPLELN.Y9rrZLALFL6LPLlLYMXx.LaNBLhMDLaLiOCMCM3MfMgenM3McMiM3QeR1RoZsP1l3Mi&amp;chco=edc240,afd8f8,cb4b4b,4da74d,f8afe8,4066ed&amp;chs=500x300&amp;cht=lc&amp;chxl=0:|Fri|Sun|Mon|Tue|Thu|Fri|1:|315|601|887|1173|1459|1745&amp;chls=2.5,1.0,0.0|2.5,1.0,0.0|2.5,1.0,0.0&amp;chdl=Slicehost|Prgmr|Linode+x86_64|Linode+i686|Amazon|Rackspace&amp;chdlp=b
+">
+    </td>
+  </tr>
+</table>
+
+**Django test suite on PostgreSQL** was run to hopefully give a picture of
+how the various hosts performed under a web application load. This is a
+single-threaded benchmark.
+
+The results are very similar to those of the SQL-bench runs against the same
+database system. Linode 64-bit and 32-bit has the lowest average runtimes
+and Amazon has a surprisingly low standard deviation. Similar to the SQL-bench
+runs Rackspace has the highest standard deviation while Slicehost has the
+highest average runtimes, more than 2.5 times slower than Linode 64-bit.
+
+<table class="hanging">
+  <caption>Django test suite on in-memory SQLite. Runtime in seconds (lower is better).</caption>
+  <tr>
+    <td>
+      <img src="http://chart.apis.google.com/chart?chxt=x,y&amp;chd=e:sArKrUuCp.rMo-pLoqogo6564r6P4..75X4l52..5an0pWpqoPoqoVrIphqLu6sqtguisotVsu6.u2lcmUoJnbqHmQnImpn9mdmfm9m8manOl9nN,S6TmULTGTNToTOTBToStToS0THTIS3TqS8S6ToTWT4UMTnTtTdTsUYUqTpS.SoTUTBTXTdTZT4TOS.UYTgTYTLTlTtUjTgTdTXTxTOS2S1S6TETE,AXFyAMAWAUAXAlAIAjAJAJASAAAOAIAlBVAXANAjA2AhANBNBbBFBIA9BZAXHiA2AvAzBSEBAlAhAxBDAkAvAvAeA3AdAUAhAjA6AnAjAuAvAjA4,FOFcFTFeFZFJFFFOFVFcFaGFFJFjFdFgFYFSMALjFtFgFPF4FVFXFVFuFqFaGRFcFgFoFjFcFSFqFGFgFtFTFrFhJEFQFaFLFTFbFcFbFqFSFXFZ,4d4B4h4y4k4v45475A5a5r5U5v6N6I5x6g6a6j6l7r636w7u7L7h7j6k6m6Y6d606m7B7H6m7r647M676o7B696y7D7D6569687M7s7n7T7x7z7P,ZBZpZaZnZyZ-ZyZqacaqZBZmZ7ZWZIZ3Z1ZjZ3ZnaQZ2aLanajacZrWDZkajbPapaqaNaBZlaIbIZ0apZXavZlYVa0ZDZmZWZRZEZOYtYHWVapZJ&amp;chco=edc240,afd8f8,cb4b4b,4da74d,f8afe8,4066ed&amp;chs=500x300&amp;cht=lc&amp;chxl=0:|Fri|Sun|Mon|Tue|Thu|Fri|1:|185|253|321|389|457&amp;chls=2.5,1.0,0.0|2.5,1.0,0.0|2.5,1.0,0.0&amp;chdl=Slicehost|Prgmr|Linode+x86_64|Linode+i686|Amazon|Rackspace&amp;chdlp=b">
+    </td>
+  </tr>
+</table>
+
+**Django test suite on in-memory SQLite** exactly the same as the previous
+benchmark against a different database system. This memory intensive benchmark
+faired badly for Amazon as it has the highest average runtime. Overall the runtimes
+are fairly stable, only Slicehost has a significant standard deviation.
+As with all the database and Django specific benchmarks Linode 64-bit has the lowest
+average runtime with 32-bit Linode close behind.
+
+<table id="summary" style="margin-left:-10em;">
+  <caption>
+    1: Single process Unixbench
+    <br>
+    2: Parallel Unixbench
+    <br>
+    3: SQL-bench on PostgreSQL
+    <br>
+    4: Django test suite on PostgreSQL
+    <br>
+    5: Django test suite on in-memory SQLite
+    <br>
+    <span style="text-decoration:overline;">x</span>: average
+    <br>
+    &sigma;: standard deviation
+    <br>
+  </caption>
+  <tr>
+    <th>&nbsp;</th>
+    <th title="unix_benchmark_single">1 <span style="text-decoration:overline;">x</span></th>
+    <th title="unix_benchmark_single">1 &sigma;</th>
+    <th title="unix_benchmark_multiple">2 <span style="text-decoration:overline;">x</span></th>
+    <th title="unix_benchmark_multiple">2 &sigma;</th>
+    <th title="pgsql_mysql_benchmark">3 <span style="text-decoration:overline;">x</span></th>
+    <th title="pgsql_mysql_benchmark">3 &sigma;</th>
+    <th title="django_pgsql_test">4 <span style="text-decoration:overline;">x</span></th>
+    <th title="django_pgsql_test">4 &sigma;</th>
+    <th title="django_sqlite3_test">5 <span style="text-decoration:overline;">x</span></th>
+    <th title="django_sqlite3_test">5 &sigma;</th>
+  </tr>
+  <tr>
+    <td>Slicehost</td>
+    <td style="text-align: right; ">278</td>
+    <td style="text-align: right; background: #fbe3e4;">45.12</td>
+    <td style="text-align: right; ">409</td>
+    <td style="text-align: right; background: #fbe3e4;">108.79</td>
+    <td style="text-align: right; background: #fbe3e4;">2132</td>
+    <td style="text-align: right; ">361.07</td>
+    <td style="text-align: right; background: #fbe3e4;">932</td>
+    <td style="text-align: right; ">177.8</td>
+    <td style="text-align: right; ">424</td>
+    <td style="text-align: right; background: #fbe3e4;">39.08</td>
+  </tr>
+  <tr>
+    <td>Linode x86_64</td>
+    <td style="text-align: right; ">570</td>
+    <td style="text-align: right; ">1.48</td>
+    <td style="text-align: right; ">1128</td>
+    <td style="text-align: right; ">8.75</td>
+    <td style="text-align: right; background: #e6efc2;">1251</td>
+    <td style="text-align: right; ">261.67</td>
+    <td style="text-align: right; background: #e6efc2;">352</td>
+    <td style="text-align: right; ">55.79</td>
+    <td style="text-align: right; background: #e6efc2;">190</td>
+    <td style="text-align: right; ">6.67</td>
+  </tr>
+  <tr>
+    <td>Linode i686</td>
+    <td style="text-align: right; background: #e6efc2;">719</td>
+    <td style="text-align: right; ">3.68</td>
+    <td style="text-align: right; background: #e6efc2;">1389</td>
+    <td style="text-align: right; ">14.13</td>
+    <td style="text-align: right; ">1392</td>
+    <td style="text-align: right; ">234.04</td>
+    <td style="text-align: right; ">399</td>
+    <td style="text-align: right; ">27.71</td>
+    <td style="text-align: right; ">216</td>
+    <td style="text-align: right; ">6.79</td>
+  </tr>
+  <tr>
+    <td>Prgmr</td>
+    <td style="text-align: right; ">243</td>
+    <td style="text-align: right; ">1.41</td>
+    <td style="text-align: right; ">274</td>
+    <td style="text-align: right; ">1.82</td>
+    <td style="text-align: right; ">1463</td>
+    <td style="text-align: right; ">238.91</td>
+    <td style="text-align: right; ">563</td>
+    <td style="text-align: right; ">55.33</td>
+    <td style="text-align: right; ">289</td>
+    <td style="text-align: right; background: #e6efc2;">2.46</td>
+  </tr>
+  <tr>
+    <td>Rackspace</td>
+    <td style="text-align: right; ">321</td>
+    <td style="text-align: right; ">3.03</td>
+    <td style="text-align: right; ">665</td>
+    <td style="text-align: right; ">21.09</td>
+    <td style="text-align: right; ">1600</td>
+    <td style="text-align: right; background: #fbe3e4;">403.31</td>
+    <td style="text-align: right; ">677</td>
+    <td style="text-align: right; background: #fbe3e4;">266.02</td>
+    <td style="text-align: right; ">322</td>
+    <td style="text-align: right; ">4.98</td>
+  </tr>
+  <tr>
+    <td>Amazon</td>
+    <td style="text-align: right; background: #fbe3e4;">211</td>
+    <td style="text-align: right; background: #e6efc2;">1.33</td>
+    <td style="text-align: right; background: #fbe3e4;">247</td>
+    <td style="text-align: right; background: #e6efc2;">1.38</td>
+    <td style="text-align: right; ">1557</td>
+    <td style="text-align: right; background: #e6efc2;">6.62</td>
+    <td style="text-align: right; ">663</td>
+    <td style="text-align: right; background: #e6efc2;">5.67</td>
+    <td style="text-align: right; background: #fbe3e4;">496</td>
+    <td style="text-align: right; ">5.22</td>
+  </tr>
+</table>
+
+Summarizing the benchmarks gives us one clear winner: Linode. 32-bit
+gave the best results on the Unixbench runs while 64-bit was fastest
+on the Django and database tests. Since Linode also has the highest
+included bandwidth I have a hard time recommending any of the other
+providers if performance and price is most important for you.
+
+If I had an opportunity to compare these providers again, I would have
+included more multi-threaded benchmarks. I'll probably not do a new
+comparison as this article has taken a lot of time and been over
+[6 months in the making][initialcommit].
+
+> If you're going to buy a VPS I'd appreciate it if you used
+> [my referral page for Linode][linoderef] or [for Slicehost][slicehostref]
+> when doing so.
+
+[githubrepo]: http://github.com/uggedal/vpsbench
+[was it up?]: http://wasitup.com
+[previous]: /vps-comparison-between-slicehost-and-prgmr
+[domu]: http://wiki.xensource.com/xenwiki/DomU
+[summarytable]: #summary
+[unixbenchpatch]: http://github.com/uggedal/vpsbench/blob/master/unixbench-5.1.2.patch
+[mysqlbench]: http://dev.mysql.com/doc/refman/5.0/en/mysql-benchmarks.html
+[mysqlpatch]: http://github.com/uggedal/vpsbench/blob/master/mysql-5.1.34.patch
+[linoderef]: http://www.linode.com/?r=e1dc01d2b95e720dee6d810afe51104c0a4f76ac
+[slicehostref]: https://manage.slicehost.com/customers/new?referrer=54e0ff341cc62b06623e8211f927c1af
+[initialcommit]: http://github.com/uggedal/vpsbench/commit/4488990a100ba16dc6da6966b53ddb8a5b98ab9c

@@ -30,7 +30,7 @@ blog.auto_permalink.path = ":blog_path/:title"
 
 blog.post_excerpts.enabled = False
 
-blog.post_default_filters = {"markdown": "markdown, syntax_highlight",}
+blog.post_default_filters = {"markdown": "markdown, syntax_highlight, smartypants",}
 
 blog.category_dir = "tags"
 

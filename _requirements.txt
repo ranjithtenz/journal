@@ -1,1 +1,2 @@
 blogofile==0.7.1
+smartypants==1.6.0.3

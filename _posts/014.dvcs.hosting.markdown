@@ -1,0 +1,888 @@
+---
+categories: dvcs, git, mercurial
+date: 2010/04/18 12:00:00
+title: Private DVCS Hosting
+---
+While using [Github][github-profile] and [Bitbucket][bitbucket-profile]
+for hosting and collaborating on open source projects is great--and not
+to mention free of charge--I have several repositories with personal and
+client related code which needs to stay private (like [wasitup][]'s source).
+Most of these repositories
+are quite small, weighing in under one megabyte. I quickly realized that I
+had reached the maximum number of private repositories on Github and Bitbucket
+for my plan while using less then one percent of my alloted disk space.
+
+I'm equally satisfied with using Git and Mercurial--both have their own
+strong and weak points--so I went out and searched for alternatives
+offering support for one or both of these
+<abbr title="Distributed Version Control Systems">DVCS</abbr>s.
+
+Please note that this is a fairly high level overview of DVCS hosting
+providers where I focused mainly on price for private repositories and
+allocated disk space. When selecting a provider you should probably
+take a closer look at how easy its offering is to use, how stable
+and available it is, and that it provides the features you need.
+
+Note that all mentions of repository count (including all values in the
+"Repos" column in the following tables) are referring to private repos only,
+not public repos.
+
+### Git and Mercurial
+
+A few providers supports both Git and Mercurial repositories. While support
+for both of my favored DVCSs is convenient, there is a possibility that the
+lack of focus on one system results in a less integrated user experience.
+
+#### [Codebase][]
+
+A fairly polished interface with a repository browser, ticketing with
+milestones, time tracking, and wikis.
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Free</td>
+    <td>&#8734; (1)</td>
+    <td>0.02GB</td>
+    <td>0</td>
+    <td>--</td>
+    <td>--</td>
+  </tr>
+
+  <tr>
+    <td>Tiny</td>
+    <td>&#8734; (3)</td>
+    <td>0.5GB</td>
+    <td>$7.72</td>
+    <td style="background: #e6efc2;">0</td>
+    <td style="background: #fbe3e4;">15.44</td>
+  </tr>
+
+  <tr>
+    <td>Small</td>
+    <td>&#8734; (15)</td>
+    <td>2GB</td>
+    <td>$20.06</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>10.03</td>
+  </tr>
+
+  <tr>
+    <td>Medium</td>
+    <td>&#8734; (30)</td>
+    <td>4GB</td>
+    <td>$32.41</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>8.10</td>
+  </tr>
+
+  <tr>
+    <td>Large</td>
+    <td>&#8734; (60)</td>
+    <td>10GB</td>
+    <td>$61.73</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>6.17</td>
+  </tr>
+</table>
+
+In Codebase one *project* can have several repositories.
+While all plans allow for an unlimited number of private repositories,
+there are restrictions on how many *active projects* are allowed. The
+parenthesized numbers in the "Repos" column represents this limitation.
+One can have an unlimited amount of *archived projects* though.
+
+The free Codebase account don't support time tracking and wikis, only
+the repository browser and ticket system are usable.
+
+#### [Repository Hosting][]
+
+Uses the popular [Trac][] open source project management tool with
+[several plugins][trac-plugins] (e.g. time tracking, agile workflow). Offers
+daily [backups directly to your own S3 account][s3-backup].
+
+<table>
+  <tr>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>&#8734;</td>
+    <td>2GB</td>
+    <td>$6</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>3</td>
+  </tr>
+</table>
+
+Repository Hosting offers a single plan. If you need to grow, 1GB of
+additional storage is $1 per month:
+
+<table>
+  <tr>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>&#8734;</td>
+    <td>6GB</td>
+    <td>$10</td>
+    <td style="background: #e6efc2;">0</td>
+    <td style="background: #e6efc2;">1.67</td>
+  </tr>
+
+  <tr>
+    <td>&#8734;</td>
+    <td>16GB</td>
+    <td>$20</td>
+    <td style="background: #e6efc2;">0</td>
+    <td style="background: #e6efc2;">1.25</td>
+  </tr>
+
+  <tr>
+    <td>&#8734;</td>
+    <td>46GB</td>
+    <td>$50</td>
+    <td style="background: #e6efc2;">0</td>
+    <td style="background: #e6efc2;">1.09</td>
+  </tr>
+</table>
+
+#### [Assembla][]
+
+When creating a new Assembla *space* you have to select from various preset
+configurations or build your own by selecting various tools (e.g. wiki,
+tickets). To confuse matters, Mercurial repositories comes bundled with
+a Trac instance, while you can create free standing Git repositories which
+can integrate with the other Assembla components like ticketing.
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Free</td>
+    <td>&#8734;</td>
+    <td>2GB</td>
+    <td>0</td>
+    <td>--</td>
+    <td>--</td>
+  </tr>
+
+  <tr>
+    <td>Single</td>
+    <td>&#8734; (1)</td>
+    <td>2GB</td>
+    <td>$24</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>12</td>
+  </tr>
+
+  <tr>
+    <td>Group</td>
+    <td>&#8734; (10)</td>
+    <td>5GB</td>
+    <td>$49</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>9.8</td>
+  </tr>
+
+  <tr>
+    <td>Professional</td>
+    <td>&#8734; (20)</td>
+    <td>20GB</td>
+    <td>$99</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>4.95</td>
+  </tr>
+
+  <tr>
+    <td>Enterprise</td>
+    <td>&#8734; (200)</td>
+    <td>50GB</td>
+    <td>$249</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>4.98</td>
+  </tr>
+</table>
+
+In Assembla one *space* can have several repositories.
+Similar to Codebase's restrictions on *projects* Assembla has restrictions
+on how many *spaces* are allowed for each plan. The parenthesized numbers
+in the "Repos" column represents this limitation.
+
+The free Assembla account don't support Mercurial repositories, only Git.
+
+#### [SSH Control][]
+
+The simplest offering in this comparison. Provides you with a web interface
+for managing repositories, users, and SSH keys.
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Free</td>
+    <td>1</td>
+    <td>0.003GB</td>
+    <td>0</td>
+    <td>--</td>
+    <td>--</td>
+  </tr>
+
+  <tr>
+    <td>Basic</td>
+    <td>8</td>
+    <td>0.2GB</td>
+    <td>$4.75</td>
+    <td>0.60</td>
+    <td style="background: #fbe3e4;">23.75</td>
+  </tr>
+
+  <tr>
+    <td>Premium</td>
+    <td>32</td>
+    <td>1GB</td>
+    <td>$9.75</td>
+    <td>0.30</td>
+    <td>9.75</td>
+  </tr>
+</table>
+
+### Git
+
+#### [Github][]
+
+Probably the most popular provider for private repositories in this
+comparison. The level of mind share which makes Github great for collaborating
+on public repositories becomes moot when working on private repositories.
+Provides the nicest repository browser of the bunch, but their issue tracker
+is arguably not that great.
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Micro</td>
+    <td>5</td>
+    <td>0.6GB</td>
+    <td>$7</td>
+    <td>1.40</td>
+    <td>11.67</td>
+  </tr>
+
+  <tr>
+    <td>Small</td>
+    <td>10</td>
+    <td>1.2GB</td>
+    <td>$12</td>
+    <td>1.20</td>
+    <td>10</td>
+  </tr>
+
+  <tr>
+    <td>Medium</td>
+    <td>20</td>
+    <td>2.4GB</td>
+    <td>$22</td>
+    <td>1.10</td>
+    <td>9.17</td>
+  </tr>
+
+  <tr>
+    <td>Large</td>
+    <td>50</td>
+    <td>6GB</td>
+    <td>$50</td>
+    <td>1</td>
+    <td>8.33</td>
+  </tr>
+
+  <tr>
+    <td>Mega</td>
+    <td>125</td>
+    <td>20GB</td>
+    <td>$125</td>
+    <td>1</td>
+    <td>6.25</td>
+  </tr>
+
+  <tr>
+    <td>Giga</td>
+    <td>300</td>
+    <td>60GB</td>
+    <td>$300</td>
+    <td>1</td>
+    <td>5</td>
+  </tr>
+</table>
+
+#### [Unfuddle][]
+
+Provides a well integrated set of tools including a repository browser, ticket
+system with milestones, time tracking and wiki like *notebook* pages.
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Free</td>
+    <td>&#8734; (1/0)</td>
+    <td>0.2GB</td>
+    <td>0</td>
+    <td>--</td>
+    <td>--</td>
+  </tr>
+
+  <tr>
+    <td>Micro</td>
+    <td>&#8734; (4/4)</td>
+    <td>0.5GB</td>
+    <td>$9</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>18</td>
+  </tr>
+
+  <tr>
+    <td>Compact</td>
+    <td>&#8734; (10/10)</td>
+    <td>2GB</td>
+    <td>$24</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>12</td>
+  </tr>
+
+  <tr>
+    <td>Corporate</td>
+    <td>&#8734; (20/20)</td>
+    <td>4GB</td>
+    <td>$49</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>12.25</td>
+  </tr>
+
+  <tr>
+    <td>Enterprise</td>
+    <td>&#8734; (50/50)</td>
+    <td>10GB</td>
+    <td>$99</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>9.90</td>
+  </tr>
+</table>
+
+One Unfuddle *project* can have several source code repositories.
+While all plans allow for an unlimited number of private repositories,
+there are restrictions on both how many *active projects* and
+*archived projects* are allowed. The parenthesized numbers in the
+"Repos" column represents the limit for active and archived projects
+respectively.
+
+#### [Beanstalk][]
+
+Delivering a super slick interface with a repository browser and integration
+with third party issue tracking systems. Also includes FTP deployment tools.
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Personal</td>
+    <td>10</td>
+    <td>3GB</td>
+    <td>$15</td>
+    <td>1.50</td>
+    <td>5</td>
+  </tr>
+
+  <tr>
+    <td>Team</td>
+    <td>15</td>
+    <td>6GB</td>
+    <td>$25</td>
+    <td>1.67</td>
+    <td>4.17</td>
+  </tr>
+
+  <tr>
+    <td>Business</td>
+    <td>30</td>
+    <td>12GB</td>
+    <td>$50</td>
+    <td>1.67</td>
+    <td>4.17</td>
+  </tr>
+
+  <tr>
+    <td>Corporate</td>
+    <td>65</td>
+    <td>24GB</td>
+    <td>$100</td>
+    <td>1.54</td>
+    <td>4.17</td>
+  </tr>
+
+  <tr>
+    <td>Giant</td>
+    <td>150</td>
+    <td>48GB</td>
+    <td>$200</td>
+    <td>1.33</td>
+    <td>4.17</td>
+  </tr>
+</table>
+
+#### [Codaset][]
+
+A well integrated set of features including source code browser
+with code review support, issue management system with control over
+worlflows, wikis, and blogs., 
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Free</td>
+    <td>1</td>
+    <td>0.2GB</td>
+    <td>0</td>
+    <td>--</td>
+    <td>--</td>
+  </tr>
+
+  <tr>
+    <td>Up to 5 Projects</td>
+    <td>5</td>
+    <td>1GB</td>
+    <td>$5</td>
+    <td>1</td>
+    <td>5</td>
+  </tr>
+</table>
+
+Codaset has an interesting pricing model when you move over 5 private
+repositories. For 6 private repositories you pay $0.04/repository per
+day. Each repositry includes 200MB of storage. This works out to the
+following numbers when calculated up to the thresholds used in the summary
+of this article:
+
+<table>
+  <tr>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>8</td>
+    <td>1.6GB</td>
+    <td>$9.73</td>
+    <td>1.22</td>
+    <td>6.08</td>
+  </tr>
+
+  <tr>
+    <td>16</td>
+    <td>3.2GB</td>
+    <td>$19.47</td>
+    <td>1.22</td>
+    <td>6.08</td>
+  </tr>
+
+  <tr>
+    <td>41</td>
+    <td>8.2GB</td>
+    <td>$49.88</td>
+    <td>1.22</td>
+    <td>6.08</td>
+  </tr>
+</table>
+
+#### [XP-Dev][]
+
+Includes a plethora of *project management tools*  (iterations, stories, bugs,
+burndown charts, velocity charts, wikis, forums, blogs, and attachments)
+in addition to standard repositories with a source browser. If that wasn't
+enough they also seem to provide Trac instances. The whole suite seems
+quite complex and unpolished.
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Pro Small</td>
+    <td>&#8734;</td>
+    <td>1GB</td>
+    <td>$5</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>5</td>
+  </tr>
+
+  <tr>
+    <td>Pro Medium</td>
+    <td>&#8734;</td>
+    <td>4GB</td>
+    <td>$15</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>3.75</td>
+  </tr>
+
+  <tr>
+    <td>Pro Large</td>
+    <td>&#8734;</td>
+    <td>10GB</td>
+    <td>$30</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>3</td>
+  </tr>
+
+  <tr>
+    <td>Enterprise Small</td>
+    <td>&#8734;</td>
+    <td>20GB</td>
+    <td>$50</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>2.50</td>
+  </tr>
+
+  <tr>
+    <td>Enterprise Medium</td>
+    <td>&#8734;</td>
+    <td>40GB</td>
+    <td>$100</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>2.50</td>
+  </tr>
+
+  <tr>
+    <td>Enterprise Large</td>
+    <td>&#8734;</td>
+    <td>100GB</td>
+    <td>$200</td>
+    <td style="background: #e6efc2;">0</td>
+    <td style="background: #e6efc2;">2</td>
+  </tr>
+</table>
+
+#### [Indefero][]
+
+A hosted version of an [open source clone][indefero-oss] of [Google Code][].
+Provides the same features as the original Google product (e.g. source browser,
+issue tracker, code review, and documentation pages).
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Simple</td>
+    <td>50</td>
+    <td>0.01GB</td>
+    <td>0</td>
+    <td>--</td>
+    <td>--</td>
+  </tr>
+
+  <tr>
+    <td>Business</td>
+    <td>&#8734;</td>
+    <td>1GB</td>
+    <td>$6.28 (&#163;49/y)</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>6.28</td>
+  </tr>
+
+  <tr>
+    <td>Enterprise</td>
+    <td>&#8734;</td>
+    <td>5GB</td>
+    <td>$25.52 (&#163;199/y)</td>
+    <td style="background: #e6efc2;">0</td>
+    <td>5.10</td>
+  </tr>
+</table>
+
+Indefero has to be paid on a yearly basis in British pounds. Monthly costs
+used in the comparison were calculated from this yearly cost.
+
+### Mercurial
+
+#### [Bitbucket][]
+
+The most popular Mercurial offering. Seen by some as a copy of Github, but I
+think we've [settled that][github-vs-bitbucket]. Provides a source code
+browser and a fairly decent issue manager in addition to a wiki system.
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Free</td>
+    <td>1</td>
+    <td>1GB</td>
+    <td>0</td>
+    <td>--</td>
+    <td>--</td>
+  </tr>
+
+  <tr>
+    <td>Amateur</td>
+    <td>5</td>
+    <td>2.5GB</td>
+    <td>$5</td>
+    <td>1</td>
+    <td style="background: #e6efc2;">2</td>
+  </tr>
+
+  <tr>
+    <td>Pro</td>
+    <td>15</td>
+    <td>5GB</td>
+    <td>$12</td>
+    <td>0.8</td>
+    <td>2.4</td>
+  </tr>
+
+  <tr>
+    <td>Large</td>
+    <td>25</td>
+    <td>26GB</td>
+    <td>$50</td>
+    <td style="background: #fbe3e4;">2</td>
+    <td style="background: #e6efc2;">1.9</td>
+  </tr>
+
+  <tr>
+    <td>Team</td>
+    <td>150</td>
+    <td>50GB</td>
+    <td>$100</td>
+    <td>0.67</td>
+    <td style="background: #e6efc2;">2</td>
+  </tr>
+</table>
+
+#### [Kiln][]
+
+A fairly new product from [Fog Creek Software][] which features a fairly
+advances repository browser, code review capabilities, and integration
+with [FogBugz][] if you need a bug tracker.
+
+<table>
+  <tr>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>&#8734;</td>
+    <td>&#8734;</td>
+    <td>$25</td>
+    <td style="background: #e6efc2;">0</td>
+    <td style="background: #e6efc2;">0</td>
+  </tr>
+</table>
+
+Kiln segments its plans based on the number of users one needs. For this
+comparison I've used the price of one user.
+There are no restrictions on how much storage you can use in Kiln provided
+that you don't do anything overly abusive (like
+[using it for video storage][kiln-storage]).
+
+#### [Active State Firefly][]
+
+Part of their suite seems to be based on Trac. In addition to a source
+browser, wiki, and tickets they provide time time tracking, burndown charts,
+forums, and blogs.
+
+<table>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Repos</th>
+    <th>Storage</th>
+    <th>Monthly cost</th>
+    <th>$/repo</th>
+    <th>$/GB</th>
+  </tr>
+
+  <tr>
+    <td>Solo</td>
+    <td>1</td>
+    <td>0.5GB</td>
+    <td>$9</td>
+    <td style="background: #fbe3e4;">9</td>
+    <td style="background: #fbe3e4;">18</td>
+  </tr>
+
+  <tr>
+    <td>Professional</td>
+    <td>5</td>
+    <td>1.5GB</td>
+    <td>$19</td>
+    <td style="background: #fbe3e4;">3.80</td>
+    <td>12.67</td>
+  </tr>
+
+  <tr>
+    <td>Team</td>
+    <td>30</td>
+    <td>3GB</td>
+    <td>$39</td>
+    <td>1.30</td>
+    <td>13</td>
+  </tr>
+</table>
+
+### Conclusion
+
+For my own needs I'm only interested in the providers which don't impose
+restrictions on the amount of private repositories. This eliminates
+SSH Control, Github, Beanstalk, Codaset, Bitbucket, and Active State Firefly.
+
+I've ranked the remaining contenders based on how much storage you
+get for your buck within three price categories:
+
+#### Free
+
+1. Assembla Free: 2GB
+2. Unfuddle Free: 0.2GB
+3. Codebase Free: 0.02GB
+
+#### Up to $10/month
+
+1. Repository Hosting 6GB: $1.67/GB
+2. XP-Dev Pro Small: $5/GB 
+3. Indefero Business: $6.28/GB
+
+#### Up to $20/month
+
+1. Repository Hosting 16GB: $1.25/GB
+2. XP-Dev Pro Medium: $3.75/GB
+
+#### Up to $50/month
+
+1. Kiln (one user): Approaching $0/GB
+1. Repository Hosting 46GB: $1.09/GB
+5. Xp-Dev Enterprise Small: $2.50/GB
+
+Kiln is obviously the most affordable solution if you're planning to store
+lots of data, but can get pricey due to the per user pricing model if
+you're working in a team.
+
+Due to the restrictions on maximum allowed active *projects* or *spaces*
+you should probably ignore Codebase, Assembla, Unfuddle if you use project
+management features (e.g. ticketing, wikis, time tracking) together
+with each private repository.
+
+I myself have signed up with both [Kiln][] and [Repository Hosting][] so that I can
+evaluate both more in depth.
+
+
+
+[github-profile]: http://github.com/uggedal/
+[bitbucket-profile]: http://bitbucket.org/uggedal/
+[wasitup]: http://wasitup.com/
+[Codebase]: http://www.codebasehq.com/
+[Repository Hosting]: http://repositoryhosting.com/
+[Trac]: http://trac.edgewall.org/
+[trac-plugins]: http://repositoryhosting.com/support/faq/plugins_and_features
+[s3-backup]: http://repositoryhosting.com/blog/2009/03/06/automated-backups-to-amazon-s3
+[SSH Control]: http://sshcontrol.com/
+[Assembla]: http://www.assembla.com/
+[Github]: http://github.com/
+[Unfuddle]: http://unfuddle.com/
+[Beanstalk]: http://beanstalkapp.com/
+[Codaset]: http://codaset.com/
+[XP-Dev]: http://www.xp-dev.com/
+[Indefero]: http://www.indefero.net/
+[indefero-oss]: http://www.indefero.net/open-source/
+[Google Code]: http://code.google.com/hosting/
+[Bitbucket]: http://bitbucket.org/
+[github-vs-bitbucket]: http://schacon.github.com/bitbucket.html
+[Kiln]: http://fogcreek.com/kiln/
+[Fog Creek Software]: http://fogcreek.com/
+[FogBugz]: http://www.fogcreek.com/fogbugz/
+[kiln-storage]: http://kiln.stackexchange.com/questions/1115/storage-space-in-the-hosted-version-of-kiln
+[Active State Firefly]: http://www.activestate.com/firefly/

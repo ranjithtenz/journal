@@ -93,7 +93,7 @@ table {
         padding: .5em;
       }
 
-h1 a, h2 a, h3 a, ul.tags a {
+h1 a, h2 a, h3 a, ul.tags a, #pagination a {
   text-decoration: none;
 }
 
@@ -101,7 +101,7 @@ h1, h1 a, h2, h2 a, h3 {
   color: #222;
 }
 
-  h1 a:hover, h2 a:hover {
+  h1 a:hover, h2 a:hover, #pagination a:hover {
     color: #c00;
   }
 
@@ -137,6 +137,10 @@ ul.tags {
     ul.tags li.active a, ul.tags a:hover {
       color: #c00;
     }
+
+.hentry {
+  padding-bottom: 2em;
+}
 
 .entry-content a {
   color: #c00;

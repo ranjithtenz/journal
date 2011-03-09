@@ -1,5 +1,4 @@
 * Only show titles of posts[1:] on the front page.
-* Check pagination and style it.
 * Check that all urls matches original urls.
 * Favicon.
 * Correct feed urls.

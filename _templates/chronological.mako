@@ -1,5 +1,5 @@
 <%inherit file="site.mako" />
-% for post in posts:
+% for i, post in enumerate(posts):
   <%include file="post.mako" args="post=post" />
 % endfor
 % if prev_link or next_link:

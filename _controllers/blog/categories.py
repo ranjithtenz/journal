@@ -34,9 +34,8 @@ def write_categories():
     for category, category_posts in blog.categorized_posts.items():
         #Write category atom feed
         atom_path = bf.util.fs_site_path_helper(
-            blog.path, blog.category_dir,
-            category.url_name, "feed", "atom")
-        feed.write_feed(category_posts, atom_path, "atom.mako")
+            blog.path, blog.category_dir)
+        feed.write_feed(category_posts, atom_path, "%s.atom" % category.url_name)
         page_num = 1
         while True:
             path = bf.util.path_join(root, category.url_name,

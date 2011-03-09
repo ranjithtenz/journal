@@ -1,8 +1,6 @@
 * Only show titles of posts[1:] on the front page.
 * Check that all urls matches original urls.
-* Correct feed urls.
 * Advertise tag atom feeds in <head>.
-* Use same urls for atom feeds as old site.
 * Create 404.
 * Redesign with media queries and html5.
 * Integreate to pusher deployment.

@@ -1,7 +1,7 @@
 ---
 categories: linux, browser, javascript, performance, iceweasel, firefox, epiphany, webkit
 date: 2008/04/26 12:00:00
-title: JavaScript Performance on GTK Linux Browser
+title: JavaScript Performance on GTK Linux Browsers
 ---
 
 I've recently noticed that my system is sluggish on certain web pages which

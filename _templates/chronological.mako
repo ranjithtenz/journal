@@ -3,11 +3,11 @@
   <%include file="post.mako" args="post=post" />
 % endfor
 % if prev_link:
- <a href="${prev_link}">« Previous Page</a>
+ <a href="${prev_link}">&laquo; Previous Page</a>
 % endif
 % if prev_link and next_link:
   --  
 % endif
 % if next_link:
- <a href="${next_link}">Next Page »</a>
+ <a href="${next_link}">Next Page &raquo;</a>
 % endif

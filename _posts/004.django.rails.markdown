@@ -3,8 +3,6 @@ categories: django, rails, loc
 date: 2008/05/10 12:00:00
 title: Django vs Rails Code Size
 ---
-Tags: django rails loc
-
 I've been a long user of Ruby and frameworks like [Rails][ra], [Merb][me],
 and [Sinatra][si]. I've been sort of following [Django][dj] since it's
 first public release but never got aground to building something with it. My

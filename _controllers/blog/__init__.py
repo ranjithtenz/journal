@@ -7,6 +7,7 @@ import chronological
 import feed
 import permapage
 import post
+import error
 
 config = {
         "name": "Blog",
@@ -34,4 +35,4 @@ def run():
     chronological.run()
     categories.run()
     feed.run()
-
+    error.run()

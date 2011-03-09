@@ -1,4 +1,3 @@
 * Only show titles of posts[1:] on the front page.
-* Create 404.
 * Redesign with media queries and html5.
 * Integreate to pusher deployment.

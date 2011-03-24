@@ -3,6 +3,21 @@ from blogofile import cache
 
 site.url = "http://journal.uggedal.com"
 
+site.file_ignore_patterns = [
+    # All files that start with an underscore
+    ".*/_.*",
+    # Vim temporary files
+    ".*~$",
+    # Vim swap files
+    ".*/\..*\.swp$",
+    # VCS directories
+    ".*/\.(git|hg|svn|bzr)$",
+    # Git and Mercurial ignored files definitions
+    ".*/.(git|hg)ignore$",
+    # fabfile
+    ".*fabfile\.py$",
+    ]
+
 #### Blog Settings ####
 blog = controllers.blog
 

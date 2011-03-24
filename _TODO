@@ -1,3 +1,4 @@
+* Use permalink.html in stead of dir with index.html.
 * Disable pagination so that we don't write page 1 dirs.
 * Show active tag when browsing tags.
 * Redesign with media queries and html5.

@@ -5,3 +5,4 @@
 </span>
 Powered by
 <a href="http://www.blogofile.com">Blogofile</a>.
+<a href="https://github.com/uggedal/journal">Source code</a>.

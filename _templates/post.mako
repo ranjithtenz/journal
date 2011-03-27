@@ -1,5 +1,5 @@
 <%page args="post, detail=True"/>
-<div class="hentry">
+<article class="hentry">
   <abbr class="updated" title="${ post.date.isoformat() }">
     ${post.date.strftime("%Y-%m-%d")}
   </abbr>
@@ -19,7 +19,7 @@
     ${self.post_prose(post)}
   </div>
 % endif
-</div>
+</article>
 
 <%def name="post_prose(post)">
   ${post.content}

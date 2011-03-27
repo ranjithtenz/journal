@@ -2,16 +2,3 @@
 % for i, post in enumerate(posts):
   <%include file="post.mako" args="post=post, detail=i==0" />
 % endfor
-% if prev_link or next_link:
-  <p id="pagination">
-  % if prev_link:
-    <a href="${prev_link}">&laquo; Previous Page</a>
-  % endif
-  % if prev_link and next_link:
-    &mdash;
-  % endif
-  % if next_link:
-    <a href="${next_link}">Next Page &raquo;</a>
-  % endif
-  </p>
-% endif

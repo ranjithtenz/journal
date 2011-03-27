@@ -1,6 +1,5 @@
 <%inherit file="base.mako" />
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-"http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
   <head>
     ${self.head()}
@@ -8,27 +7,10 @@
   <body>
     ${self.header()}
     ${next.body()}
-    <p id="elsewhere">
-% for service, url in bf.config.blog.author.elsewhere:
-      <a href="${ url }">${ service }</a>
-% endfor
-    </p>
-    <p id="footer">
+    <footer>
       ${self.footer()}
-    </p>
+    </footer>
   </body>
-  <script type='text/javascript'>
-    var gaJsHost = (("https:" == document.location.protocol) ?
-                   "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost +
-                            "google-analytics.com/ga.js' type='text/" +
-                            "javascript'%3E%3C/script%3E"));
-  </script>
-  <script type='text/javascript'>
-    var pageTracker = _gat._getTracker("${ bf.config.blog.analytics_key }");
-    pageTracker._initData();
-    pageTracker._trackPageview();
-  </script>
 </html>
 <%def name="head()">
   <%include file="head.mako" />

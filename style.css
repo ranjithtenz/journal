@@ -93,7 +93,7 @@ table {
         padding: .5em;
       }
 
-h1 a, h2 a, h3 a, ul.tags a, #pagination a {
+h1 a, h2 a, h3 a, ul.tags a {
   text-decoration: none;
 }
 
@@ -101,7 +101,7 @@ h1, h1 a, h2, h2 a, h3 {
   color: #222;
 }
 
-  h1 a:hover, h2 a:hover, #pagination a:hover {
+  h1 a:hover, h2 a:hover {
     color: #c00;
   }
 
@@ -146,7 +146,7 @@ ul.tags {
   color: #000;
 }
 
-p#footer {
+footer {
   color: #bbb;
   font-size: .75em;
   margin-top: 3em;
@@ -154,7 +154,7 @@ p#footer {
   text-indent: 0;
 }
 
-p#footer a {
+footer a {
   color: #999;
 }
 

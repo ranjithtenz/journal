@@ -1,0 +1,37 @@
+---
+categories: puppet, devops, automation, configuraiton management
+date: 2011/01/01 12:00:00
+title: Deploying WSGI applications with Puppet
+draft: true
+---
+
+* Create git submodules.
+* Switch from runit to ___?
+* Maybe test on Ubuntu?
+
+Start with example from node config.
+
+Init Puppet
+
+Configuring Nginx
+
+Configuring Gunicorn
+
+Configuring virtualenv
+
+Push deployment with Fabric
+
+  - Why don't install requirements with Puppet?
+
+Part 2: Using a Puppet master
+
+Part 3: PostgreSQL, Redis
+
+Part N: Firewalling with UFW
+
+Part N: Backup with tarsnap
+
+Part N: Base system locale, timezone, ntp, shell
+
+Part N: Puppet dashboard?
+
